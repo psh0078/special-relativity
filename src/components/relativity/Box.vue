@@ -8,7 +8,8 @@ import Two from 'two.js'
 import type { Rectangle } from 'two.js/src/shapes/rectangle';
 
 const props = defineProps<{
-  position: { x: number; y: number }
+  initialPosition: { x: number; y: number }
+  currentTime: number
   velocity: number
   width?: number
   height?: number
@@ -19,13 +20,20 @@ const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let box: Rectangle | null = null
 
+const currentPosition = computed(() => {
+  return {
+    x: props.initialPosition.x + props.velocity * 100 * props.currentTime,
+    y: props.initialPosition.y
+  };
+});
+
 const boxPositionStyle = computed(() => {
   const boxWidth = props.width || 50;
   const boxHeight = props.height || 25;
 
   return {
-    left: `${props.position.x - boxWidth/2}px`,
-    top: `${props.position.y - boxHeight/2}px`,
+    left: `${currentPosition.value.x - boxWidth/2}px`,
+    top: `${currentPosition.value.y - boxHeight/2}px`,
     width: `${boxWidth}px`,
     height: `${boxHeight}px`
   };
