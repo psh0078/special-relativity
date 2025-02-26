@@ -1,5 +1,9 @@
 <template>
-  <div ref="boxContainer" class="box-container" :style="boxPositionStyle"></div>
+  <div
+    ref="boxContainer"
+    class="box-container"
+    :style="boxPositionStyle"
+  />
 </template>
 
 <script setup lang="ts">

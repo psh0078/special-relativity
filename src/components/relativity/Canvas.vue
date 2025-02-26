@@ -1,11 +1,18 @@
 <template>
   <div>
     <div class="controls">
-      <button @click="toggleAnimation">{{ isAnimating ? 'Pause' : 'Play' }}</button>
-      <button @click="resetSimulation">Reset</button>
+      <button @click="toggleAnimation">
+        {{ isAnimating ? 'Pause' : 'Play' }}
+      </button>
+      <button @click="resetSimulation">
+        Reset
+      </button>
       <span class="time-display">Time: {{ time.toFixed(2) }}</span>
     </div>
-    <div ref="canvasContainer" class="canvas-container">
+    <div
+      ref="canvasContainer"
+      class="canvas-container"
+    >
       <Box
         :initial-position="{x: origin.x, y: origin.y}"
         :current-time="time"
