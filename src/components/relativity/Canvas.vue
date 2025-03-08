@@ -1,19 +1,16 @@
 <template>
   <div>
-    <div class="controls">
-      <button @click="toggleAnimation">
-        {{ isAnimating ? 'Pause' : 'Play' }}
-      </button>
-      <button @click="resetSimulation">
-        Reset
-      </button>
-      <span class="time-display">Time: {{ time.toFixed(2) }}</span>
-    </div>
+    <TimeControls
+      :time="time"
+      @reset="time = 0"
+      @update-time="time = $event"
+    />
     <div
       ref="canvasContainer"
       class="canvas-container"
     >
       <Box
+        :id="1"
         :initial-position="{x: origin.x, y: origin.y}"
         :current-time="time"
         :velocity="0.5"
@@ -22,6 +19,7 @@
         color="#FFA500"
       />
       <Box
+        :id="2"
         :initial-position="{x: origin.x, y: origin.y - 45}"
         :current-time="time"
         :velocity="0.8"
@@ -34,9 +32,15 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, shallowRef, reactive, onUnmounted} from 'vue';
+import {
+  ref,
+  onMounted,
+  shallowRef,
+  reactive,
+  provide} from 'vue';
 import Two from 'two.js';
 import Box from './Box.vue';
+import TimeControls from './TimeControls.vue'
 
 const canvasContainer = ref(null);
 const two = shallowRef<Two | null>(null);
@@ -50,49 +54,13 @@ const origin = reactive({
 });
 
 const time = ref<number>(0);
-const isAnimating = ref<boolean>(false);
-const lastTimestamp = ref(0);
-let animationFrameId: number | null = null;
+
+const currentReferenceFrame = ref<number | null>(0.5);
+provide('currentReferenceFrame', currentReferenceFrame);
 
 onMounted(() => {
   initCanvas();
 });
-
-onUnmounted(() => {
-  if (animationFrameId !== null) {
-    cancelAnimationFrame(animationFrameId);
-  }
-});
-
-function animate(timestamp: number): void {
-  if (!isAnimating.value) return;
-
-  if (lastTimestamp.value === 0) {
-    lastTimestamp.value = timestamp;
-  }
-  const deltaTime = (timestamp - lastTimestamp.value) / 1000;
-  lastTimestamp.value = timestamp;
-  time.value += deltaTime;
-
-  animationFrameId = requestAnimationFrame(animate);
-}
-
-function toggleAnimation(): void {
-  isAnimating.value = !isAnimating.value;
-
-  if (isAnimating.value) {
-    lastTimestamp.value = 0;
-    animationFrameId = requestAnimationFrame(animate);
-  }
-}
-
-function resetSimulation(): void {
-  time.value = 0;
-  isAnimating.value = false;
-  if (animationFrameId !== null) {
-    cancelAnimationFrame(animationFrameId);
-  }
-}
 
 function initCanvas(): void {
   if (!canvasContainer.value) {

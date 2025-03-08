@@ -7,11 +7,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, shallowRef, computed } from 'vue'
+import {ref, onMounted, shallowRef, computed, inject, type Ref} from 'vue'
 import Two from 'two.js'
 import type { Rectangle } from 'two.js/src/shapes/rectangle';
 
 const props = defineProps<{
+  id: number
   initialPosition: { x: number; y: number }
   currentTime: number
   velocity: number
@@ -20,11 +21,21 @@ const props = defineProps<{
   color?: string
 }>()
 
+const currentReferenceFrame = inject<Ref<number | null>>('currentReferenceFrame', ref(null));
+
 const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let box: Rectangle | null = null
 
+const isReferenceFrame = computed(() => props.velocity === currentReferenceFrame.value);
+
 const currentPosition = computed(() => {
+  if (isReferenceFrame.value) {
+    return {
+      x: props.initialPosition.x,
+      y: props.initialPosition.y
+    };
+  }
   return {
     x: props.initialPosition.x + props.velocity * 100 * props.currentTime,
     y: props.initialPosition.y
