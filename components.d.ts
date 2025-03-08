@@ -11,6 +11,8 @@ declare module 'vue' {
     Box: typeof import('./src/components/relativity/Box.vue')['default']
     Canvas: typeof import('./src/components/relativity/Canvas.vue')['default']
     Clock: typeof import('./src/components/relativity/Clock.vue')['default']
+    CreateBox: typeof import('./src/components/relativity/CreateBox.vue')['default']
+    FrameSelector: typeof import('./src/components/relativity/FrameSelector.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

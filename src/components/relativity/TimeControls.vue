@@ -1,7 +1,7 @@
 <template>
   <div class="time-controls">
     <button @click="toggleAnimation">
-      {{ isAnimating ? 'Pause' : 'Play' }}
+      {{ isAnimating ? '⏸️ Pause' : '▶️ Play' }}
     </button>
     <button @click="resetSimulation">
       Reset

@@ -13,6 +13,7 @@ export interface ObjectProperties {
   width: number;
   height: number;
   color?: string;
+  labVelocity?: number;
 }
 
 export class BaseObject {
@@ -22,8 +23,11 @@ export class BaseObject {
     this.properties = props;
   }
 
-  public updatePosition(time: number): void {
-    this.properties.position.x += this.properties.velocity * time;
+  public updateProperties(newProps: Partial<ObjectProperties>): void {
+    this.properties = {
+      ...this.properties,
+      ...newProps
+    };
   }
 
   public getProperties(): ObjectProperties {
@@ -32,11 +36,11 @@ export class BaseObject {
 }
 
 export class Box extends BaseObject {
-  constructor(id: number, x: number, velocity: number) {
+  constructor(id: number, x: number, y:number, velocity: number) {
     super({
       id,
       type: 'box',
-      position: { x, y: velocity },
+      position: { x, y},
       velocity,
       width: 50,
       height: 30,

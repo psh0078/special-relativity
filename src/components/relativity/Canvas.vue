@@ -1,31 +1,30 @@
 <template>
-  <div>
-    <TimeControls
-      :time="time"
-      @reset="time = 0"
-      @update-time="time = $event"
-    />
+  <div class="relativity-simulator">
+    <div class="control-group">
+      <CreateBox
+        :origin="origin"
+        @box-created="addBox"
+      />
+      <TimeControls
+        :time="time"
+        @reset="time = 0"
+        @update-time="time = $event"
+      />
+    </div>
     <div
       ref="canvasContainer"
       class="canvas-container"
     >
       <Box
-        :id="1"
-        :initial-position="{x: origin.x, y: origin.y}"
+        v-for="object in objects"
+        :id="object.getProperties().id"
+        :key="object.getProperties().id"
+        :initial-position="object.getProperties().position"
         :current-time="time"
-        :velocity="0.5"
-        :width="100"
-        :height="50"
-        color="#FFA500"
-      />
-      <Box
-        :id="2"
-        :initial-position="{x: origin.x, y: origin.y - 45}"
-        :current-time="time"
-        :velocity="0.8"
-        :width="80"
-        :height="40"
-        color="#FFA500"
+        :velocity="object.getProperties().velocity"
+        :width="object.getProperties().width"
+        :height="object.getProperties().height"
+        :color="object.getProperties().color"
       />
     </div>
   </div>
@@ -37,10 +36,14 @@ import {
   onMounted,
   shallowRef,
   reactive,
-  provide} from 'vue';
+  provide,
+} from 'vue';
 import Two from 'two.js';
 import Box from './Box.vue';
-import TimeControls from './TimeControls.vue'
+import CreateBox from './CreateBox.vue';
+import TimeControls from './TimeControls.vue';
+import { BaseObject } from '@/types/Objects';
+import type { Position } from '@/types/Objects';
 
 const canvasContainer = ref(null);
 const two = shallowRef<Two | null>(null);
@@ -48,15 +51,16 @@ const two = shallowRef<Two | null>(null);
 const width = 1000;
 const height = 700;
 
-const origin = reactive({
+const origin = reactive<Position>({
   x: width / 2,
   y: height / 2
 });
 
 const time = ref<number>(0);
-
-const currentReferenceFrame = ref<number | null>(0.5);
+const currentReferenceFrame = ref<number | null>(0);
 provide('currentReferenceFrame', currentReferenceFrame);
+
+const objects = ref<BaseObject[]>([]);
 
 onMounted(() => {
   initCanvas();
@@ -105,11 +109,25 @@ function drawCoordinateSystem(): void {
 
 }
 
-// function drawTicks(origin: {x: number, y: number}): void {
-//   if (!two.value) return;
+function addBox(box: BaseObject) {
+  console.log('Box added:', box.getProperties());
+  objects.value.push(box);
+}
 
+function jumpToFrame(objectVelocity: number): void {
+  currentReferenceFrame.value = objectVelocity;
 
-// }
+  objects.value.forEach(object => {
+    const props = object.getProperties();
+    const labVelocity = props.labVelocity || props.velocity;
+
+    const relativeVelocity = (labVelocity - objectVelocity) /
+                             (1 - labVelocity * objectVelocity);
+
+    object.updateProperties({ velocity: relativeVelocity });
+  });
+}
+
 </script>
 
 <style scoped>
