@@ -37,7 +37,7 @@ function createBox(): void {
   const box = new Box(
     nextId++,
     props.origin.x,
-    vscale(3, velocity.value, 500, 700),
+    vscale(3, velocity.value, 400, props.origin.y * 2),
     velocity.value,
   );
   emit('boxCreated', box);

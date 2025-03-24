@@ -15,7 +15,7 @@ const props = defineProps<{
   id: number
   initialPosition: { x: number; y: number }
   currentTime: number
-  velocity: number
+  velocity: number // velocity wrt. lab
   width?: number
   height?: number
   color?: string

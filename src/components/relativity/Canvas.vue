@@ -10,6 +10,10 @@
         @reset="time = 0"
         @update-time="time = $event"
       />
+      <FrameSelector
+        :objects="objects"
+        :current-frame="currentReferenceFrame"
+      />
     </div>
     <div
       ref="canvasContainer"
@@ -42,14 +46,15 @@ import Two from 'two.js';
 import Box from './Box.vue';
 import CreateBox from './CreateBox.vue';
 import TimeControls from './TimeControls.vue';
+import FrameSelector from './FrameSelector.vue';
 import { BaseObject } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
 
 const canvasContainer = ref(null);
 const two = shallowRef<Two | null>(null);
 
-const width = 1000;
-const height = 700;
+const width = 700;
+const height = 400;
 
 const origin = reactive<Position>({
   x: width / 2,
@@ -119,22 +124,28 @@ function jumpToFrame(objectVelocity: number): void {
 
   objects.value.forEach(object => {
     const props = object.getProperties();
-    const labVelocity = props.labVelocity || props.velocity;
 
-    const relativeVelocity = (labVelocity - objectVelocity) /
-                             (1 - labVelocity * objectVelocity);
+    const relativeVelocity = (props.veloctiy - objectVelocity) /
+                             (1 - props.velocity * objectVelocity);
 
     object.updateProperties({ velocity: relativeVelocity });
   });
 }
 
+function handleFrameChange()
+
 </script>
 
 <style scoped>
 .canvas-container {
-  width: 1000px;
-  height: 700px;
+  width: 700px;
+  height: 400px;
   margin: 20px auto;
   position: relative;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: row;
 }
 </style>
