@@ -10,10 +10,10 @@ export interface ObjectProperties {
   type: ObjectType;
   position: Position;
   velocity: number;
+  velocityLab: number;
   width: number;
   height: number;
   color?: string;
-  labVelocity?: number;
 }
 
 export class BaseObject {
@@ -36,12 +36,13 @@ export class BaseObject {
 }
 
 export class Box extends BaseObject {
-  constructor(id: number, x: number, y:number, velocity: number) {
+  constructor(id: number, x: number, y:number, velocity: number, velocityLab: number) {
     super({
       id,
       type: 'box',
       position: { x, y},
       velocity,
+      velocityLab,
       width: 50,
       height: 30,
       color: '#FFA500'

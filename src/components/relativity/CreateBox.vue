@@ -10,7 +10,13 @@
         class="form-input"
       >
     </div>
-
+    <div class="form-group">
+      <label for="frame">Reference Frame:</label>
+      <select id="frame" v-model="selectedFrame" class="form-input">
+        <option value="lab">Lab Frame</option>
+        <option value="current">Current Frame</option>
+      </select>
+    </div>
     <button @click="createBox" class="create-button">
       Add Box
     </button>
@@ -20,10 +26,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Box, type Position } from '@/types/Objects';
-import { vscale } from '@/physics';
+import { vscale, computeRelativeVelocity } from '@/physics';
 
 const props = defineProps<{
-  origin: Position
+  origin: Position,
+  currentReferenceFrame: number
 }>()
 
 const emit = defineEmits<{
@@ -31,14 +38,21 @@ const emit = defineEmits<{
 }>();
 
 const velocity = ref(0);
+const selectedFrame = ref('lab');
 let nextId = 1;
 
 function createBox(): void {
+  let velocityLab = velocity.value;
+  if (selectedFrame.value === 'current') {
+    velocityLab = computeRelativeVelocity(velocity.value, 0);
+  };
+
   const box = new Box(
     nextId++,
     props.origin.x,
     vscale(3, velocity.value, 400, props.origin.y * 2),
     velocity.value,
+    velocityLab
   );
   emit('boxCreated', box);
 }

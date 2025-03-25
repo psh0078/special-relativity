@@ -3,6 +3,7 @@
     <div class="control-group">
       <CreateBox
         :origin="origin"
+        :current-reference-frame="currentReferenceFrame"
         @box-created="addBox"
       />
       <TimeControls
@@ -27,6 +28,7 @@
         :initial-position="object.getProperties().position"
         :current-time="time"
         :velocity="object.getProperties().velocity"
+        :velocity-lab="object.getProperties().velocityLab"
         :width="object.getProperties().width"
         :height="object.getProperties().height"
         :color="object.getProperties().color"
