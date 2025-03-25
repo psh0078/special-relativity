@@ -16,20 +16,20 @@
     -->
     <div
       v-for="obj in objects"
-      :key="obj.id"
+      :key="obj.getProperties().id"
       class="frame-option"
     >
       <input
         type="radio"
-        :id="`object-${obj.id}`"
+        :id="`object-${obj.getProperties().id}`"
         name="reference-frame"
-        :value="obj.velocity"
+        :value="obj.getProperties().velocity"
         v-model="selectedFrame"
         @change="onFrameChange"
       />
-      <label :for="`object-${obj.id}`">
-        Object #{{ obj.id }}
-        (v = {{ formatVelocity(obj.velocity) }})
+      <label :for="`object-${obj.getProperties().id}`">
+        Object #{{ obj.getProperties().id }}
+        (v = {{ formatVelocity(obj.getProperties().velocity) }})
       </label>
     </div>
   </div>
@@ -53,7 +53,7 @@ const emit = defineEmits(['frame-change']);
 
 const selectedFrame = ref(props.currentFrame);
 
-watch(() => props.currentFrameId, (newValue) => {
+watch(() => props.currentFrame, (newValue) => {
   selectedFrame.value = newValue;
 });
 
@@ -63,7 +63,7 @@ function onFrameChange() {
 
 function formatVelocity(v) {
   const sign = v >= 0 ? '+' : '';
-  return `${sign}${v.toFixed(2)}c`;
+  return `${sign}${v.toFixed(1)}c`;
 }
 </script>
 

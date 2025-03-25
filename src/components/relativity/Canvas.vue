@@ -13,6 +13,7 @@
       <FrameSelector
         :objects="objects"
         :current-frame="currentReferenceFrame"
+        @frame-change= "handleFrameChange"
       />
     </div>
     <div
@@ -49,6 +50,7 @@ import TimeControls from './TimeControls.vue';
 import FrameSelector from './FrameSelector.vue';
 import { BaseObject } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
+import { computeRelativeVelocity } from '@/physics.ts';
 
 const canvasContainer = ref(null);
 const two = shallowRef<Two | null>(null);
@@ -119,20 +121,18 @@ function addBox(box: BaseObject) {
   objects.value.push(box);
 }
 
-function jumpToFrame(objectVelocity: number): void {
-  currentReferenceFrame.value = objectVelocity;
+function handleFrameChange(frameVelocity: number) {
+  currentReferenceFrame.value = frameVelocity;
+  console.log('Reference Frame changed to ', frameVelocity);
 
   objects.value.forEach(object => {
     const props = object.getProperties();
-
-    const relativeVelocity = (props.veloctiy - objectVelocity) /
-                             (1 - props.velocity * objectVelocity);
-
+    const relativeVelocity = computeRelativeVelocity(props.velocity, frameVelocity);
+    console.log(props.id, relativeVelocity);
     object.updateProperties({ velocity: relativeVelocity });
+    console.log(object.getProperties());
   });
 }
-
-function handleFrameChange()
 
 </script>
 
