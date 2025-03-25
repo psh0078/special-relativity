@@ -1,7 +1,6 @@
 <template>
   <div class="frame-selector">
     <h3>Frame Selector</h3>
-    <!--
     <div class="frame-option">
       <input
         type="radio"
@@ -13,7 +12,6 @@
       />
       <label for="lab-frame">Lab Frame (v = 0c)</label>
     </div>
-    -->
     <div
       v-for="obj in objects"
       :key="obj.getProperties().id"

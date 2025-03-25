@@ -27,15 +27,14 @@ const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let box: Rectangle | null = null
 
-const isReferenceFrame = computed(() => props.velocity === currentReferenceFrame.value);
-
 const currentPosition = computed(() => {
-  if (isReferenceFrame.value) {
+  if (props.velocity === currentReferenceFrame.value) {
     return {
       x: props.initialPosition.x,
       y: props.initialPosition.y
     };
   }
+
   return {
     x: props.initialPosition.x + props.velocity * 100 * props.currentTime,
     y: props.initialPosition.y

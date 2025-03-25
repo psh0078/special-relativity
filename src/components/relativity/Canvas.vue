@@ -64,7 +64,7 @@ const origin = reactive<Position>({
 });
 
 const time = ref<number>(0);
-const currentReferenceFrame = ref<number | null>(0);
+const currentReferenceFrame = ref<number | null>(0.0);
 provide('currentReferenceFrame', currentReferenceFrame);
 
 const objects = ref<BaseObject[]>([]);
