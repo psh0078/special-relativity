@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Box, type Position } from '@/types/Objects';
-import { vscale, computeRelativeVelocity } from '@/physics';
+import * as physics from '@/physics';
 
 const props = defineProps<{
   origin: Position,
@@ -43,15 +43,17 @@ let nextId = 1;
 
 function createBox(): void {
   let velocityLab = velocity.value;
+  const frameVelcity = props.currentReferenceFrame
+  console.log('lab', velocityLab);
+
   if (selectedFrame.value === 'current') {
-    velocityLab = computeRelativeVelocity(velocity.value, 0);
+    velocityLab = physics.reverseTransformRelativeVelocity(velocity.value, frameVelcity);
   };
 
   const box = new Box(
     nextId++,
     props.origin.x,
-    vscale(3, velocity.value, 400, props.origin.y * 2),
-    velocity.value,
+    physics.vscale(3, velocity.value, 400, props.origin.y * 2),
     velocityLab
   );
   emit('boxCreated', box);

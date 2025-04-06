@@ -12,9 +12,9 @@
         @update-time="time = $event"
       />
       <FrameSelector
-        :objects="objects"
+        :box-objects="boxObjects"
         :current-frame="currentReferenceFrame"
-        @frame-change= "handleFrameChange"
+        @frame-change="handleFrameChange"
       />
     </div>
     <div
@@ -22,16 +22,17 @@
       class="canvas-container"
     >
       <Box
-        v-for="object in objects"
+        v-for="object in boxObjects"
         :id="object.getProperties().id"
         :key="object.getProperties().id"
         :initial-position="object.getProperties().position"
         :current-time="time"
-        :velocity="object.getProperties().velocity"
+        :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
         :velocity-lab="object.getProperties().velocityLab"
         :width="object.getProperties().width"
         :height="object.getProperties().height"
         :color="object.getProperties().color"
+        :current-reference-frame="currentReferenceFrame"
       />
     </div>
   </div>
@@ -43,16 +44,16 @@ import {
   onMounted,
   shallowRef,
   reactive,
-  provide,
+  computed,
 } from 'vue';
 import Two from 'two.js';
 import Box from './Box.vue';
 import CreateBox from './CreateBox.vue';
 import TimeControls from './TimeControls.vue';
 import FrameSelector from './FrameSelector.vue';
-import { BaseObject } from '@/types/Objects';
+import { BaseObject, Box as BoxClass } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
-import { computeRelativeVelocity } from '@/physics.ts';
+// import * as physics from '@/physics';
 
 const canvasContainer = ref(null);
 const two = shallowRef<Two | null>(null);
@@ -66,10 +67,13 @@ const origin = reactive<Position>({
 });
 
 const time = ref<number>(0);
-const currentReferenceFrame = ref<number | null>(0.0);
-provide('currentReferenceFrame', currentReferenceFrame);
+const currentReferenceFrame = ref<number>(0);
+// provide('currentReferenceFrame', currentReferenceFrame);
 
 const objects = ref<BaseObject[]>([]);
+const boxObjects = computed(() =>
+  objects.value.filter(obj => obj.getProperties().type === 'box') as BoxClass[]
+);
 
 onMounted(() => {
   initCanvas();
@@ -126,16 +130,7 @@ function addBox(box: BaseObject) {
 function handleFrameChange(frameVelocity: number) {
   currentReferenceFrame.value = frameVelocity;
   console.log('Reference Frame changed to ', frameVelocity);
-
-  objects.value.forEach(object => {
-    const props = object.getProperties();
-    const relativeVelocity = computeRelativeVelocity(props.velocity, frameVelocity);
-    console.log(props.id, relativeVelocity);
-    object.updateProperties({ velocity: relativeVelocity });
-    console.log(object.getProperties());
-  });
 }
-
 </script>
 
 <style scoped>

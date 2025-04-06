@@ -7,9 +7,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, shallowRef, computed, inject, type Ref} from 'vue'
+import { ref, onMounted, shallowRef, computed } from 'vue'
 import Two from 'two.js'
 import type { Rectangle } from 'two.js/src/shapes/rectangle';
+import * as physics from '@/physics';
 
 const props = defineProps<{
   id: number
@@ -20,16 +21,22 @@ const props = defineProps<{
   width?: number
   height?: number
   color?: string
+  currentReferenceFrame: number
 }>()
 
-const currentReferenceFrame = inject<Ref<number | null>>('currentReferenceFrame', ref(null));
+//TODO: Use props instead of inject/provide
+// const currentReferenceFrame = inject<Ref<number | null>>('currentReferenceFrame', ref(null));
 
 const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let box: Rectangle | null = null
 
+const velocityInCurrentFrame = computed(() => {
+  return physics.forwardTransformRelativeVelocity(props.velocityLab, props.currentReferenceFrame);
+});
+
 const currentPosition = computed(() => {
-  if (props.velocity === currentReferenceFrame.value) {
+  if (velocityInCurrentFrame.value === props.currentReferenceFrame) {
     return {
       x: props.initialPosition.x,
       y: props.initialPosition.y

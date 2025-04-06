@@ -3,31 +3,31 @@
     <h3>Frame Selector</h3>
     <div class="frame-option">
       <input
-        type="radio"
         id="lab-frame"
+        v-model="selectedFrame"
+        type="radio"
         name="reference-frame"
         :value="0"
-        v-model="selectedFrame"
         @change="onFrameChange"
-      />
+      >
       <label for="lab-frame">Lab Frame (v = 0c)</label>
     </div>
     <div
-      v-for="obj in objects"
+      v-for="obj in boxObjects"
       :key="obj.getProperties().id"
       class="frame-option"
     >
       <input
-        type="radio"
         :id="`object-${obj.getProperties().id}`"
-        name="reference-frame"
-        :value="obj.getProperties().velocity"
         v-model="selectedFrame"
+        type="radio"
+        name="reference-frame"
+        :value="obj.getProperties().velocityLab"
         @change="onFrameChange"
-      />
+      >
       <label :for="`object-${obj.getProperties().id}`">
         Object #{{ obj.getProperties().id }}
-        (v = {{ formatVelocity(obj.getProperties().velocity) }})
+        (v = {{ formatVelocity(obj.getProperties().velocityLab) }})
       </label>
     </div>
   </div>
@@ -35,10 +35,11 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { Box as BoxClass } from '@/types/Objects';
 
 const props = defineProps({
-  objects: {
-    type:Array,
+  boxObjects: {
+    type: Array as () => BoxClass[],
     default: () => []
   },
   currentFrame: {
@@ -59,7 +60,7 @@ function onFrameChange() {
   emit('frame-change', selectedFrame.value);
 }
 
-function formatVelocity(v) {
+function formatVelocity(v: number) {
   const sign = v >= 0 ? '+' : '';
   return `${sign}${v.toFixed(1)}c`;
 }

@@ -2,8 +2,12 @@ export function computeLorentzGamma(beta: number): number {
   return 1 / Math.sqrt(1 - beta^2)
 }
 
-export function computeRelativeVelocity(v1: number, v2: number): number {
-  return (v1 - v2) / (1 - v1 * v2);
+export function forwardTransformRelativeVelocity(v: number, frameVelocity: number): number {
+  return (v - frameVelocity) / (1 - v * frameVelocity);
+}
+
+export function reverseTransformRelativeVelocity(v: number, frameVelocity: number): number {
+  return (v + frameVelocity) / (1 + v * frameVelocity);
 }
 
 export function positionCalculator(
