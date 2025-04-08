@@ -1,56 +1,52 @@
 <template>
   <div class="relativity-simulator">
-    <div class="control-group">
-      <CreateBox
-        :origin="origin"
-        :current-reference-frame="currentReferenceFrame"
-        @box-created="addBox"
-      />
-      <TimeControls
+    <h1 class="title">Special Relativity Lab</h1>
+    <div class="layout">
+      <ControlPanel
         :time="time"
+        :box-objects="boxObjects"
+        :current-reference-frame="currentReferenceFrame"
+        :origin="origin"
         @reset="time = 0"
         @update-time="time = $event"
-      />
-      <FrameSelector
-        :box-objects="boxObjects"
-        :current-frame="currentReferenceFrame"
         @frame-change="handleFrameChange"
+        @box-created="addBox"
       />
-    </div>
-    <CanvasNavigation
-      :canvas-width="canvasWidth"
-      :visible-width="visibleWidth"
-    >
-      <div class="canvas-container">
-        <CoordinateSystem
-          :width="canvasWidth"
-          :height="height"
-          :origin="origin"
-        />
-        <Box
-          v-for="object in boxObjects"
-          :id="object.getProperties().id"
-          :key="object.getProperties().id"
-          :initial-position="object.getProperties().position"
-          :current-time="time"
-          :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
-          :velocity-lab="object.getProperties().velocityLab"
-          :width="object.getProperties().width"
-          :height="object.getProperties().height"
-          :color="object.getProperties().color"
-          :current-reference-frame="currentReferenceFrame"
-        />
+      <div class="canvas-area">
+        <CanvasNavigation
+          :canvas-width="canvasWidth"
+          :visible-width="visibleWidth"
+        >
+          <div class="canvas-container">
+            <CoordinateSystem
+              :width="canvasWidth"
+              :height="height"
+              :origin="origin"
+            />
+            <Box
+              v-for="object in boxObjects"
+              :id="object.getProperties().id"
+              :key="object.getProperties().id"
+              :initial-position="object.getProperties().position"
+              :current-time="time"
+              :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
+              :velocity-lab="object.getProperties().velocityLab"
+              :width="object.getProperties().width"
+              :height="object.getProperties().height"
+              :color="object.getProperties().color"
+              :current-reference-frame="currentReferenceFrame"
+            />
+          </div>
+        </CanvasNavigation>
       </div>
-    </CanvasNavigation>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
 import Box from './Box.vue';
-import CreateBox from './CreateBox.vue';
-import TimeControls from './TimeControls.vue';
-import FrameSelector from './FrameSelector.vue';
+import ControlPanel from './ControlPanel.vue';
 import CoordinateSystem from './CoordinateSystem.vue';
 import CanvasNavigation from './CanvasNavigation.vue';
 import { BaseObject, Box as BoxClass } from '@/types/Objects';
@@ -85,17 +81,32 @@ function handleFrameChange(frameVelocity: number) {
 </script>
 
 <style scoped>
-.control-group {
+.relativity-simulator {
+  padding: 24px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.layout {
   display: flex;
-  flex-direction: row;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 70px auto 0;
+  width: 100%;
   justify-content: center;
-  gap: 20px;
-  margin-bottom: 20px;
+}
+
+.canvas-area {
+  flex: 1;
+  min-width: 0; /* Prevents flex item from overflowing */
 }
 
 .canvas-container {
   width: 2000px;
   height: 400px;
   position: relative;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

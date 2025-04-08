@@ -12,6 +12,7 @@ declare module 'vue' {
     Canvas: typeof import('./src/components/relativity/Canvas.vue')['default']
     CanvasNavigation: typeof import('./src/components/relativity/CanvasNavigation.vue')['default']
     Clock: typeof import('./src/components/relativity/Clock.vue')['default']
+    ControlPanel: typeof import('./src/components/relativity/ControlPanel.vue')['default']
     CoordinateSystem: typeof import('./src/components/relativity/CoordinateSystem.vue')['default']
     CreateBox: typeof import('./src/components/relativity/CreateBox.vue')['default']
     FrameSelector: typeof import('./src/components/relativity/FrameSelector.vue')['default']

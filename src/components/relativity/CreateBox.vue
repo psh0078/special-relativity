@@ -1,24 +1,27 @@
 <template>
   <div class="create-box-form">
-    <h3>Create New Box</h3>
     <div class="form-group">
-      <label for="velocity">Velocity:</label>
+      <label for="velocity">Velocity (c)</label>
       <input
         id="velocity"
         v-model.number="velocity"
         type="number"
+        step="0.1"
+        min="-1"
+        max="1"
         class="form-input"
+        placeholder="Enter velocity"
       >
     </div>
     <div class="form-group">
-      <label for="frame">Reference Frame:</label>
+      <label for="frame">Reference Frame</label>
       <select id="frame" v-model="selectedFrame" class="form-input">
         <option value="lab">Lab Frame</option>
         <option value="current">Current Frame</option>
       </select>
     </div>
     <button @click="createBox" class="create-button">
-      Add Box
+      Create Box
     </button>
   </div>
 </template>
@@ -79,29 +82,53 @@ function vscale(
 
 <style scoped>
 .create-box-form {
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-  margin-bottom: 10px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
 }
 
 .form-input {
-  padding: 5px;
+  padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  width: 120px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3498db;
 }
 
 .create-button {
-  background-color: #4CAF50;
+  padding: 10px 16px;
+  background-color: #3498db;
   color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-button:hover {
+  background-color: #2980b9;
 }
 </style>

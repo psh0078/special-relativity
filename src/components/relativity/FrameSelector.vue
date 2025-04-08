@@ -1,35 +1,21 @@
 <template>
   <div class="frame-selector">
-    <h3>Frame Selector</h3>
-    <div class="frame-option">
-      <input
-        id="lab-frame"
-        v-model="selectedFrame"
-        type="radio"
-        name="reference-frame"
-        :value="0"
-        @change="onFrameChange"
-      >
-      <label for="lab-frame">Lab Frame (v = 0c)</label>
-    </div>
-    <div
-      v-for="obj in boxObjects"
-      :key="obj.getProperties().id"
-      class="frame-option"
+    <h3>Reference Frame</h3>
+    <select
+      v-model="selectedFrame"
+      class="frame-select"
+      @change="onFrameChange"
     >
-      <input
-        :id="`object-${obj.getProperties().id}`"
-        v-model="selectedFrame"
-        type="radio"
-        name="reference-frame"
+      <option :value="0">Lab Frame (v = 0c)</option>
+      <option
+        v-for="obj in boxObjects"
+        :key="obj.getProperties().id"
         :value="obj.getProperties().velocityLab"
-        @change="onFrameChange"
       >
-      <label :for="`object-${obj.getProperties().id}`">
         Object #{{ obj.getProperties().id }}
         (v = {{ formatVelocity(obj.getProperties().velocityLab) }})
-      </label>
-    </div>
+      </option>
+    </select>
   </div>
 </template>
 
@@ -68,14 +54,35 @@ function formatVelocity(v: number) {
 
 <style scoped>
 .frame-selector {
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.frame-option {
-  margin-bottom: 0.5rem;
+h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
 }
 
-label {
-  margin-left: 0.5rem;
+.frame-select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+  min-width: 200px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.frame-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.frame-select option {
+  padding: 8px;
 }
 </style>
