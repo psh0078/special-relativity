@@ -24,9 +24,6 @@ const props = defineProps<{
   currentReferenceFrame: number
 }>()
 
-//TODO: Use props instead of inject/provide
-// const currentReferenceFrame = inject<Ref<number | null>>('currentReferenceFrame', ref(null));
-
 const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let box: Rectangle | null = null
@@ -80,7 +77,11 @@ onMounted(() => {
     boxHeight
   )
 
-  box.fill = props.color || '#FFA500'
+  const color = props.color || '#FFA500';
+  const r = parseInt(color.slice(1, 3), 16);
+  const g = parseInt(color.slice(3, 5), 16);
+  const b = parseInt(color.slice(5, 7), 16);
+  box.fill = `rgba(${r}, ${g}, ${b}, 0.8)`;
   box.stroke = '#000000'
   box.linewidth = 2
 })
@@ -90,5 +91,6 @@ onMounted(() => {
 .box-container {
   position: absolute;
   pointer-events: none;
+  mix-blend-mode: multiply;
 }
 </style>

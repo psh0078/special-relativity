@@ -53,10 +53,27 @@ function createBox(): void {
   const box = new Box(
     nextId++,
     props.origin.x,
-    physics.vscale(3, velocity.value, 400, props.origin.y * 2),
+    vscale(3, velocity.value, 250, props.origin.y * 2),
     velocityLab
   );
   emit('boxCreated', box);
+}
+
+function vscale(
+  n: number,
+  velocity: number,
+  verticalStretchFactor: number,
+  canvasHeight: number
+): number {
+  if (Math.abs(velocity) >= 1) {
+    const edgeOffset = 20;
+    return velocity > 0 ? edgeOffset : canvasHeight - edgeOffset;
+  }
+  const scaledValue = verticalStretchFactor *
+                     Math.sign(velocity) *
+                     (Math.exp(n * Math.abs(velocity)) - 1) /
+                     (Math.exp(n) - 1);
+  return (canvasHeight / 2) - scaledValue;
 }
 </script>
 
