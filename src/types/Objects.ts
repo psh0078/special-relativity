@@ -43,8 +43,8 @@ export class Box extends BaseObject {
       type: 'box',
       position: { x, y},
       velocityLab,
-      width: 50,
-      height: 30,
+      width: 80,
+      height: 20,
       color: '#FFA500'
     });
   }

@@ -1,5 +1,5 @@
-export function computeLorentzGamma(beta: number): number {
-  return 1 / Math.sqrt(1 - beta^2)
+export function computeLorentzGamma(velocity: number): number {
+  return 1 / Math.sqrt(1 - velocity^2)
 }
 
 export function forwardTransformRelativeVelocity(v: number, frameVelocity: number): number {
@@ -10,6 +10,9 @@ export function reverseTransformRelativeVelocity(v: number, frameVelocity: numbe
   return (v + frameVelocity) / (1 + v * frameVelocity);
 }
 
+export function lengthContraction(length: number, velocity: number): number {
+  return length * Math.sqrt(1 - velocity**2)
+}
 export function positionCalculator(
   inputPosition: number,
   currentFrame: number,

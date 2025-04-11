@@ -26,7 +26,7 @@ function drawCoordinateSystem(): void {
   const tickSpacing = 70;
   const fontSize = 12;
 
-  // Draw ticks to the left of origin
+  // To the left of origin
   for (let x = props.origin.x; x >= 0; x -= tickSpacing) {
     const tick = two.value.makeLine(x, props.origin.y - tickLength/2, x, props.origin.y + tickLength/2);
     tick.stroke = '#000000';
@@ -39,7 +39,7 @@ function drawCoordinateSystem(): void {
     }
   }
 
-  // Draw ticks to the right of origin
+  // To the right of origin
   for (let x = props.origin.x + tickSpacing; x <= props.width; x += tickSpacing) {
     const tick = two.value.makeLine(x, props.origin.y - tickLength/2, x, props.origin.y + tickLength/2);
     tick.stroke = '#000000';
@@ -50,7 +50,6 @@ function drawCoordinateSystem(): void {
     label.alignment = 'center';
   }
 
-  // Add origin label
   const originLabel = two.value.makeText('0', props.origin.x, props.origin.y + 20);
   originLabel.size = fontSize;
   originLabel.alignment = 'center';

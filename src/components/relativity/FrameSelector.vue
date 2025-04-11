@@ -1,6 +1,5 @@
 <template>
   <div class="frame-selector">
-    <h3>Reference Frame</h3>
     <select
       v-model="selectedFrame"
       class="frame-select"

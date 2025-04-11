@@ -28,6 +28,12 @@ const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let box: Rectangle | null = null
 
+let boxWidth = props.width ?? 80;
+const boxHeight = props.height ?? 20;
+if (props.currentReferenceFrame !== props.velocityLab) {
+  boxWidth = physics.lengthContraction(boxWidth , props.velocity);
+}
+
 const velocityInCurrentFrame = computed(() => {
   return physics.forwardTransformRelativeVelocity(props.velocityLab, props.currentReferenceFrame);
 });
@@ -47,9 +53,6 @@ const currentPosition = computed(() => {
 });
 
 const boxPositionStyle = computed(() => {
-  const boxWidth = props.width || 50;
-  const boxHeight = props.height || 25;
-
   return {
     left: `${currentPosition.value.x - boxWidth/2}px`,
     top: `${currentPosition.value.y - boxHeight/2}px`,
@@ -62,13 +65,10 @@ onMounted(() => {
   if (!boxContainer.value) return
 
   two.value = new Two({
-    width: props.width || 50,
-    height: props.height || 25,
+    width: boxWidth,
+    height: boxHeight,
     autostart: true
   }).appendTo(boxContainer.value)
-
-  const boxWidth = props.width || 50;
-  const boxHeight = props.height || 25;
 
   box = two.value.makeRectangle(
     boxWidth/2,

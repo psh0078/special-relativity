@@ -1,24 +1,36 @@
 <template>
   <div class="canvas-navigation">
     <div class="navigation-row">
-      <button class="nav-button left" @click="scrollLeft">
+      <button
+        class="nav-button left"
+        @click="scrollLeft"
+      >
         &lt;
       </button>
-      <div class="scrollable-wrapper" ref="scrollContainer">
-        <slot></slot>
+      <div
+        ref="scrollContainer"
+        class="scrollable-wrapper"
+      >
+        <slot />
       </div>
-      <button class="nav-button right" @click="scrollRight">
+      <button
+        class="nav-button right"
+        @click="scrollRight"
+      >
         &gt;
       </button>
     </div>
-    <button class="return-to-origin" @click="returnToOrigin">
+    <button
+      class="return-to-origin"
+      @click="returnToOrigin"
+    >
       Return to Origin
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps<{
   canvasWidth: number;
@@ -26,6 +38,10 @@ const props = defineProps<{
 }>();
 
 const scrollContainer = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  returnToOrigin();
+});
 
 function scrollLeft() {
   if (scrollContainer.value) {
