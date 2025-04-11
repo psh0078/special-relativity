@@ -22,6 +22,7 @@ const props = defineProps<{
   height?: number
   color?: string
   currentReferenceFrame: number
+  origin: { x: number; y: number }
 }>()
 
 const boxContainer = ref<HTMLElement | null>(null)
@@ -34,22 +35,18 @@ if (props.currentReferenceFrame !== props.velocityLab) {
   boxWidth = physics.lengthContraction(boxWidth , props.velocity);
 }
 
-const velocityInCurrentFrame = computed(() => {
-  return physics.forwardTransformRelativeVelocity(props.velocityLab, props.currentReferenceFrame);
-});
-
 const currentPosition = computed(() => {
-  if (velocityInCurrentFrame.value === props.currentReferenceFrame) {
+  if (props.currentReferenceFrame !== props.velocityLab) {
     return {
-      x: props.initialPosition.x,
-      y: props.initialPosition.y
+      x: props.initialPosition.x + props.velocity * 100 * props.currentTime,
+      y: physics.vscale(3, props.velocity, 200, props.origin.y * 2)
+    };
+  } else {
+    return {
+      x: props.origin.x,
+      y: props.origin.y
     };
   }
-
-  return {
-    x: props.initialPosition.x + props.velocity * 100 * props.currentTime,
-    y: props.initialPosition.y
-  };
 });
 
 const boxPositionStyle = computed(() => {

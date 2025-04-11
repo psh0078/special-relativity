@@ -35,6 +35,7 @@
               :height="object.getProperties().height"
               :color="object.getProperties().color"
               :current-reference-frame="currentReferenceFrame"
+              :origin="origin"
             />
           </div>
         </CanvasNavigation>
