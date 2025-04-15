@@ -1,5 +1,6 @@
 <template>
   <div class="create-box-form">
+    <h4>Box</h4>
     <div class="form-group">
       <label for="velocity">Velocity (c)</label>
       <input
