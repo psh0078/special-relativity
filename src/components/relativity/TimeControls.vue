@@ -5,6 +5,9 @@
       <span class="time-display">t = {{ displayTime.toFixed(2) }}</span>
     </div>
     <div class="button-group">
+      <button class="control-button step" @click="stepTime(-0.1)">
+        <span class="button-icon">⏪</span>
+      </button>
       <button
         class="control-button play-pause"
         :class="{ 'is-playing': isAnimating }"
@@ -12,6 +15,9 @@
       >
         <span class="button-icon">{{ isAnimating ? '⏸️' : '▶️' }}</span>
         <span class="button-text">{{ isAnimating ? 'Pause' : 'Play' }}</span>
+      </button>
+      <button class="control-button step" @click="stepTime(0.1)">
+        <span class="button-icon">⏩</span>
       </button>
       <button
         class="control-button reset"
@@ -62,18 +68,18 @@ function resetSimulation(): void {
   emit('reset');
 }
 
-function animate(timestamp: number): void {
+function animate(): void {
   if (!isAnimating.value) return;
 
-  if (lastTimestamp.value === 0) {
-    lastTimestamp.value = timestamp;
-  }
-  const deltaTime = (timestamp - lastTimestamp.value) / 1000;
-  lastTimestamp.value = timestamp;
-
-  emit('updateTime', props.time + deltaTime);
+  const deltaTime = 0.01;
+  const currentTime = Number((props.time + deltaTime).toFixed(2));
+  emit('updateTime', currentTime);
 
   animationFrameId = requestAnimationFrame(animate);
+}
+
+function stepTime(amount: number): void {
+  emit('updateTime', Number((props.time + amount).toFixed(2)));
 }
 </script>
 
@@ -144,6 +150,15 @@ h3 {
 }
 
 .control-button.reset:hover {
+  background-color: #e0e0e0;
+}
+
+.control-button.step {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.control-button.step:hover {
   background-color: #e0e0e0;
 }
 

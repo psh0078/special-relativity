@@ -31,6 +31,16 @@ export function reverseTransformRelativeTime(time: number, velocity: number, pos
   return computeLorentzGamma(velocity) * (time + velocity * position)
 }
 
+export function solveVelocityFromPosition(
+  currentX: number,
+  x0: number,
+  currentTime: number,
+  t0: number
+): number {
+  if (currentTime === t0) return 0;
+  return (currentX - x0) / ((currentTime - t0));
+}
+
 export function vscale(
   n: number,
   velocity: number,

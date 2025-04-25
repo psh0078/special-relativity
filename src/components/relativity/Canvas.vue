@@ -1,6 +1,6 @@
 <template>
   <div class="relativity-simulator">
-    <h1 class="title">Special Relativity Lab</h1>
+    <h1 class="title">Special Relativity Simulator</h1>
     <div class="layout">
       <ControlPanel
         :time="time"
@@ -27,7 +27,7 @@
               v-for="object in boxObjects"
               :id="object.getProperties().id"
               :key="object.getProperties().id"
-              :initial-position="object.getProperties().position"
+              :initial-conditions="object.getProperties().initialConditions"
               :current-time="time"
               :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
               :velocity-lab="object.getProperties().velocityLab"
@@ -36,6 +36,9 @@
               :color="object.getProperties().color"
               :current-reference-frame="currentReferenceFrame"
               :origin="origin"
+              :current-x="object.getProperties().currentX!"
+              @update-current-x="updateBoxCurrentX"
+              @update-current-time="updateCurrentTime"
             />
           </div>
         </CanvasNavigation>
@@ -78,6 +81,18 @@ function addBox(box: BaseObject) {
 function handleFrameChange(frameVelocity: number) {
   currentReferenceFrame.value = frameVelocity;
   console.log('Reference Frame changed to ', frameVelocity);
+}
+
+function updateBoxCurrentX(id: number, x: number) {
+  const box = objects.value.find(obj => obj.getProperties().id === id);
+  if (box) {
+    box.updateProperties({ currentX: x });
+  }
+}
+
+function updateCurrentTime(tprime: number) {
+  time.value = tprime;
+  console.log('Current time changed to ', time.value);
 }
 </script>
 

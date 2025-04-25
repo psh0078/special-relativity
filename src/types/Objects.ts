@@ -1,20 +1,26 @@
 import { forwardTransformRelativeVelocity } from '@/physics'
 
-export type ObjectType = 'box' | 'clock' | 'flash';
-
 export interface Position {
   x: number;
   y: number;
 }
 
+export type ObjectType = 'box' | 'clock' | 'flash';
+
+export interface InitialConditions {
+  x0: number;
+  t0: number;
+}
+
 export interface ObjectProperties {
   id: number;
   type: ObjectType;
-  position: Position;
+  initialConditions: InitialConditions;
   velocityLab: number;
   width: number;
   height: number;
   color?: string;
+  currentX?: number;
 }
 
 export class BaseObject {
@@ -37,15 +43,16 @@ export class BaseObject {
 }
 
 export class Box extends BaseObject {
-  constructor(id: number, x: number, y:number, velocityLab: number) {
+  constructor(id: number, x0: number, t0:number, velocityLab: number) {
     super({
       id,
       type: 'box',
-      position: { x, y},
+      initialConditions: { x0, t0},
       velocityLab,
       width: 80,
       height: 20,
-      color: '#FFA500'
+      color: '#FFA500',
+      currentX: x0
     });
   }
 

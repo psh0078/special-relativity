@@ -13,9 +13,11 @@ import type { Rectangle } from 'two.js/src/shapes/rectangle';
 import type { Text } from 'two.js/src/text';
 import * as physics from '@/physics';
 
+const VELOCITY_SCALE_FACTOR = 100;
+
 const props = defineProps<{
   id: number
-  initialPosition: { x: number; y: number }
+  initialConditions: { x0: number; t0: number }
   currentTime: number
   velocity: number
   velocityLab: number // velocity wrt. lab
@@ -24,7 +26,13 @@ const props = defineProps<{
   color?: string
   currentReferenceFrame: number
   origin: { x: number; y: number }
+  currentX: number
 }>()
+
+const emit = defineEmits<{
+  updateCurrentX: [id: number, x: number]
+  updateCurrentTime: [tprime: number]
+}>();
 
 const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
@@ -41,14 +49,29 @@ const boxWidth = computed(() => {
 });
 
 const currentPosition = computed(() => {
-  if (props.currentReferenceFrame === props.velocityLab) {
+  // even if an obj is in its own frame, should be able to set x0
+  // if (props.currentTime === 1.5) {
+  //   console.log('id', props.id);
+  //   console.log('currentTime', props.currentTime);
+  //   console.log('initialConditions.x0', props.initialConditions.x0);
+  //   console.log('velocity', props.velocity);
+  //   console.log('velocityLab', props.velocityLab);
+  //   console.log('currentReferenceFrame', props.currentReferenceFrame);
+  //   console.log('currentX', props.currentX);
+  //   console.log('--------------------------------');
+  // }
+  if (props.currentReferenceFrame === props.velocityLab && props.initialConditions.x0 !== 0) {
     return {
-      x: props.origin.x,
+      x: props.origin.x + props.initialConditions.x0 * 70,
       y: props.origin.y
     };
   } else {
+    const t0prime = physics.forwardTransformRelativeTime(props.initialConditions.t0, props.velocity, props.initialConditions.x0);
+    const currentX = props.initialConditions.x0 + props.velocity * (props.currentTime - t0prime);
+    const x = currentX * VELOCITY_SCALE_FACTOR + props.origin.x;
+    emit('updateCurrentX', props.id, currentX);
     return {
-      x: props.initialPosition.x + props.velocity * 100 * props.currentTime,
+      x,
       y: physics.vscale(3, props.velocity, 200, props.origin.y * 2)
     };
   }
@@ -104,8 +127,21 @@ watch(boxWidth, (newWidth) => {
     box.position.x = newWidth/2;
     two.value.width = newWidth;
     text.position.x = newWidth/2;
-
     two.value.update();
+  }
+}, { immediate: true });
+
+watch(() => props.currentReferenceFrame, (newFrame) => {
+  if (newFrame === props.velocityLab) {
+    console.log('id', props.id);
+    console.log('currentX', props.currentX);
+    const currentVelocity = physics.solveVelocityFromPosition(props.currentX, props.initialConditions.x0, props.currentTime, props.initialConditions.t0);
+    console.log('velocity', currentVelocity);
+    console.log('currentTime', props.currentTime);
+    const tprime = physics.forwardTransformRelativeTime(props.currentTime, currentVelocity, props.currentX);
+    console.log('tprime:', tprime);
+    console.log('--------------------------------');
+    emit('updateCurrentTime', tprime);
   }
 }, { immediate: true });
 </script>
