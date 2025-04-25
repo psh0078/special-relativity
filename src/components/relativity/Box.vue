@@ -50,23 +50,23 @@ const boxWidth = computed(() => {
 
 const currentPosition = computed(() => {
   // even if an obj is in its own frame, should be able to set x0
-  // if (props.currentTime === 1.5) {
-  //   console.log('id', props.id);
-  //   console.log('currentTime', props.currentTime);
-  //   console.log('initialConditions.x0', props.initialConditions.x0);
-  //   console.log('velocity', props.velocity);
-  //   console.log('velocityLab', props.velocityLab);
-  //   console.log('currentReferenceFrame', props.currentReferenceFrame);
-  //   console.log('currentX', props.currentX);
-  //   console.log('--------------------------------');
-  // }
+  if (props.currentTime === 1.5) {
+    console.log('id', props.id);
+    console.log('currentTime', props.currentTime);
+    console.log('initialConditions.x0', props.initialConditions.x0);
+    console.log('velocity', props.velocity);
+    console.log('velocityLab', props.velocityLab);
+    console.log('currentReferenceFrame', props.currentReferenceFrame);
+    console.log('currentX', props.currentX);
+    console.log('--------------------------------');
+  }
   if (props.currentReferenceFrame === props.velocityLab && props.initialConditions.x0 !== 0) {
     return {
       x: props.origin.x + props.initialConditions.x0 * 70,
       y: props.origin.y
     };
   } else {
-    const t0prime = physics.forwardTransformRelativeTime(props.initialConditions.t0, props.velocity, props.initialConditions.x0);
+    const t0prime = physics.transformTimeToFrame(props.initialConditions.t0, props.velocity, props.initialConditions.x0);
     const currentX = props.initialConditions.x0 + props.velocity * (props.currentTime - t0prime);
     const x = currentX * VELOCITY_SCALE_FACTOR + props.origin.x;
     emit('updateCurrentX', props.id, currentX);
@@ -133,14 +133,8 @@ watch(boxWidth, (newWidth) => {
 
 watch(() => props.currentReferenceFrame, (newFrame) => {
   if (newFrame === props.velocityLab) {
-    console.log('id', props.id);
-    console.log('currentX', props.currentX);
-    const currentVelocity = physics.solveVelocityFromPosition(props.currentX, props.initialConditions.x0, props.currentTime, props.initialConditions.t0);
-    console.log('velocity', currentVelocity);
-    console.log('currentTime', props.currentTime);
-    const tprime = physics.forwardTransformRelativeTime(props.currentTime, currentVelocity, props.currentX);
-    console.log('tprime:', tprime);
-    console.log('--------------------------------');
+    const currentVelocity = physics.calculateVelocityFromPosition(props.currentX, props.initialConditions.x0, props.currentTime, props.initialConditions.t0);
+    const tprime = physics.transformTimeToFrame(props.currentTime, currentVelocity, props.currentX);
     emit('updateCurrentTime', tprime);
   }
 }, { immediate: true });

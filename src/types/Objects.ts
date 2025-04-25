@@ -1,4 +1,4 @@
-import { forwardTransformRelativeVelocity } from '@/physics'
+import { transformVelocityToFrame } from '@/physics'
 
 export interface Position {
   x: number;
@@ -57,6 +57,6 @@ export class Box extends BaseObject {
   }
 
   public getVelocityInCurrentFrame(frameVelocity: number): number {
-    return forwardTransformRelativeVelocity(this.properties.velocityLab, frameVelocity);
+    return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
   }
 }

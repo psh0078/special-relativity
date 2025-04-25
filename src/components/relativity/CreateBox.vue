@@ -79,11 +79,11 @@ function createBox(): void {
   console.log('lab values:', { velocityLab, x0Lab, t0Lab });
 
   if (velocityFrame.value === 'current') {
-    velocityLab = physics.reverseTransformRelativeVelocity(velocity.value, props.currentReferenceFrame);
+    velocityLab = physics.transformVelocityToLab(velocity.value, props.currentReferenceFrame);
   }
   if (positionFrame.value === 'current') {
-    x0Lab = physics.reverseTransformRelativePosition(x0.value, velocityLab, t0Lab);
-    t0Lab = physics.reverseTransformRelativeTime(t0.value, velocityLab, x0Lab);
+    x0Lab = physics.transformPositionToLab(x0.value, velocityLab, t0Lab);
+    t0Lab = physics.transformTimeToLab(t0.value, velocityLab, x0Lab);
   }
   console.log('transformed values:', { velocityLab, x0Lab, t0Lab });
 
