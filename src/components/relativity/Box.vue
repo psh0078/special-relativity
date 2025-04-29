@@ -3,7 +3,19 @@
     ref="boxContainer"
     class="box-container"
     :style="boxPositionStyle"
-  />
+    @mouseenter="showTooltip = true"
+    @mouseleave="showTooltip = false"
+  >
+    <div v-if="showTooltip" class="tooltip">
+      <div class="tooltip-content">
+        <div>ID: #{{ id }}</div>
+        <div>Position: {{ currentX.toFixed(2) }}</div>
+        <div>Time: {{ currentTime.toFixed(2) }}</div>
+        <div>Velocity (current frame): {{ velocity.toFixed(2) }}c</div>
+        <div>Velocity (lab frame): {{ velocityLab.toFixed(2) }}c</div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -86,6 +98,8 @@ const boxPositionStyle = computed(() => {
   };
 });
 
+const showTooltip = ref(false);
+
 onMounted(() => {
   if (!boxContainer.value) return
 
@@ -143,7 +157,38 @@ watch(() => props.currentReferenceFrame, (newFrame) => {
 <style scoped>
 .box-container {
   position: absolute;
-  pointer-events: none;
+  pointer-events: auto;
   mix-blend-mode: multiply;
+}
+
+.tooltip {
+  position: absolute;
+  top: -130px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px 5px 0;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent;
 }
 </style>
