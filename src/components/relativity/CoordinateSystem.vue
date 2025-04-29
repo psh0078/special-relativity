@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, shallowRef } from 'vue';
+import { ref, onMounted, shallowRef, watch } from 'vue';
 import Two from 'two.js';
 import type { Position } from '@/types/Objects';
 
@@ -11,10 +11,30 @@ const props = defineProps<{
   width: number;
   height: number;
   origin: Position;
+  labFrameBoxY: number | null;
 }>();
 
 const container = ref<HTMLElement | null>(null);
 const two = shallowRef<Two | null>(null);
+let dottedXAxis: any = null;
+
+function drawDottedXAxis(): void {
+  if (!two.value || props.labFrameBoxY === null) return;
+
+  if (dottedXAxis) {
+    two.value.remove(dottedXAxis);
+  }
+
+  dottedXAxis = two.value.makeLine(0, props.labFrameBoxY, props.width, props.labFrameBoxY);
+  dottedXAxis.stroke = '#000000';
+  dottedXAxis.dashes = [5, 5];
+  dottedXAxis.opacity = 0.5;
+  two.value.update();
+}
+
+watch(() => props.labFrameBoxY, () => {
+  drawDottedXAxis();
+});
 
 function drawCoordinateSystem(): void {
   if (!two.value) return;
@@ -23,7 +43,7 @@ function drawCoordinateSystem(): void {
   xAxisOrigin.stroke = '#000000';
 
   const tickLength = 10;
-  const tickSpacing = 70;
+  const tickSpacing = 80;
   const fontSize = 12;
 
   // To the left of origin

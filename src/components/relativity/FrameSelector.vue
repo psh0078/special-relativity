@@ -47,7 +47,7 @@ function onFrameChange() {
 
 function formatVelocity(v: number) {
   const sign = v >= 0 ? '+' : '';
-  return `${sign}${v.toFixed(1)}c`;
+  return `${sign}${v.toFixed(6)}c`;
 }
 </script>
 

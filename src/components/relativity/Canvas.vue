@@ -22,6 +22,7 @@
               :width="canvasWidth"
               :height="height"
               :origin="origin"
+              :lab-frame-box-y="labFrameBoxY"
             />
             <Box
               v-for="object in boxObjects"
@@ -55,6 +56,7 @@ import CoordinateSystem from './CoordinateSystem.vue';
 import CanvasNavigation from './CanvasNavigation.vue';
 import { BaseObject, Box as BoxClass } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
+import * as physics from '@/physics';
 
 const canvasWidth = 2000;
 const visibleWidth = 700;
@@ -72,6 +74,13 @@ const objects = ref<BaseObject[]>([]);
 const boxObjects = computed(() =>
   objects.value.filter(obj => obj.getProperties().type === 'box') as BoxClass[]
 );
+
+const labFrameBoxY = computed(() => {
+  const labFrameBox = boxObjects.value.find(box => box.getProperties().velocityLab === 0);
+  if (!labFrameBox) return null;
+  const velocityInCurrentFrame = physics.transformVelocityToFrame(0, currentReferenceFrame.value);
+  return physics.vscale(3, velocityInCurrentFrame, 150, origin.y * 2);
+});
 
 function addBox(box: BaseObject) {
   console.log('Box added:', box.getProperties());

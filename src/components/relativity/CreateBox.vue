@@ -30,7 +30,7 @@
           class="form-input"
           placeholder="x0"
         >
-        <select v-model="positionFrame" class="frame-select">
+        <select v-model="initialConditionsFrame" class="frame-select">
           <option value="lab">Lab Frame</option>
           <option value="current">Current Frame</option>
         </select>
@@ -69,7 +69,7 @@ const velocity = ref(0);
 const x0 = ref(0);
 const t0 = ref(0);
 const velocityFrame = ref('lab');
-const positionFrame = ref('lab');
+const initialConditionsFrame = ref('current');
 let nextId = 1;
 
 function createBox(): void {
@@ -81,7 +81,7 @@ function createBox(): void {
   if (velocityFrame.value === 'current') {
     velocityLab = physics.transformVelocityToLab(velocity.value, props.currentReferenceFrame);
   }
-  if (positionFrame.value === 'current') {
+  if (initialConditionsFrame.value === 'current') {
     x0Lab = physics.transformPositionToLab(x0.value, velocityLab, t0Lab);
     t0Lab = physics.transformTimeToLab(t0.value, velocityLab, x0Lab);
   }
