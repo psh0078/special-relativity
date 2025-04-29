@@ -9,10 +9,9 @@
     <div v-if="showTooltip" class="tooltip">
       <div class="tooltip-content">
         <div>ID: #{{ id }}</div>
-        <div>Position: {{ currentX.toFixed(2) }}</div>
-        <div>Time: {{ currentTime.toFixed(2) }}</div>
-        <div>Velocity (current frame): {{ velocity.toFixed(2) }}c</div>
-        <div>Velocity (lab frame): {{ velocityLab.toFixed(2) }}c</div>
+        <div>x: {{ currentX.toFixed(2) }}</div>
+        <div>v' (current frame): {{ velocity.toFixed(6) }}c</div>
+        <div>v (lab frame): {{ velocityLab.toFixed(2) }}c</div>
       </div>
     </div>
   </div>
@@ -25,7 +24,8 @@ import type { Rectangle } from 'two.js/src/shapes/rectangle';
 import type { Text } from 'two.js/src/text';
 import * as physics from '@/physics';
 
-const VELOCITY_SCALE_FACTOR = 100;
+const VELOCITY_SCALE_FACTOR = 80; // this should equal the tick spacing in the coordinate system
+const VELOCITY_VERTICAL_STRETCH_FACTOR = 150;
 
 const props = defineProps<{
   id: number
@@ -61,30 +61,20 @@ const boxWidth = computed(() => {
 });
 
 const currentPosition = computed(() => {
-  // even if an obj is in its own frame, should be able to set x0
-  if (props.currentTime === 1.5) {
-    console.log('id', props.id);
-    console.log('currentTime', props.currentTime);
-    console.log('initialConditions.x0', props.initialConditions.x0);
-    console.log('velocity', props.velocity);
-    console.log('velocityLab', props.velocityLab);
-    console.log('currentReferenceFrame', props.currentReferenceFrame);
-    console.log('currentX', props.currentX);
-    console.log('--------------------------------');
-  }
-  if (props.currentReferenceFrame === props.velocityLab && props.initialConditions.x0 !== 0) {
-    return {
-      x: props.origin.x + props.initialConditions.x0 * 70,
-      y: props.origin.y
-    };
+  if (props.currentReferenceFrame === 0 && props.initialConditions.x0 !== 0) {
+      return {
+        x: props.origin.x + props.initialConditions.x0 * VELOCITY_SCALE_FACTOR,
+        y: props.origin.y
+      }
   } else {
     const t0prime = physics.transformTimeToFrame(props.initialConditions.t0, props.velocity, props.initialConditions.x0);
-    const currentX = props.initialConditions.x0 + props.velocity * (props.currentTime - t0prime);
+    const x0prime = physics.transformPositionToFrame(props.initialConditions.x0, props.velocity, t0prime);
+    const currentX = x0prime + props.velocity * (props.currentTime - t0prime);
     const x = currentX * VELOCITY_SCALE_FACTOR + props.origin.x;
     emit('updateCurrentX', props.id, currentX);
     return {
       x,
-      y: physics.vscale(3, props.velocity, 200, props.origin.y * 2)
+      y: physics.vscale(3, props.velocity, VELOCITY_VERTICAL_STRETCH_FACTOR, props.origin.y * 2)
     };
   }
 });
@@ -166,7 +156,7 @@ watch(() => props.currentReferenceFrame, (newFrame) => {
   top: -130px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 8px 12px;
   border-radius: 4px;
