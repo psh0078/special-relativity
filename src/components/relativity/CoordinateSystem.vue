@@ -6,7 +6,7 @@
 import { ref, onMounted, shallowRef, watch } from 'vue';
 import Two from 'two.js';
 import type { Position } from '@/types/Objects';
-
+import type { Line } from 'two.js/src/shapes/line';
 const props = defineProps<{
   width: number;
   height: number;
@@ -16,7 +16,7 @@ const props = defineProps<{
 
 const container = ref<HTMLElement | null>(null);
 const two = shallowRef<Two | null>(null);
-let dottedXAxis: any = null;
+let dottedXAxis: Line | null = null;
 
 function drawDottedXAxis(): void {
   if (!two.value || props.labFrameBoxY === null) return;

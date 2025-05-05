@@ -21,7 +21,7 @@
 import { ref, onMounted, shallowRef, computed, watch } from 'vue'
 import Two from 'two.js'
 import type { Rectangle } from 'two.js/src/shapes/rectangle';
-import type { Text } from 'two.js/src/text';
+// import type { Text } from 'two.js/src/text';
 import * as physics from '@/physics';
 
 const VELOCITY_SCALE_FACTOR = 80; // this should equal the tick spacing in the coordinate system
@@ -49,7 +49,7 @@ const emit = defineEmits<{
 const boxContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let box: Rectangle | null = null
-let text: Text | null = null
+// let text: Text | null = null
 
 const boxHeight = props.height ?? 20;
 const boxWidth = computed(() => {
@@ -114,23 +114,23 @@ onMounted(() => {
   box.stroke = '#000000'
   box.linewidth = 2
 
-  text = two.value.makeText(
-    `#${props.id}`,
-    boxWidth.value/2,
-    boxHeight/2
-  );
-  text.fill = '#000000';
-  text.size = 12;
-  text.alignment = 'center';
-  text.baseline = 'middle';
+  // text = two.value.makeText(
+  //   `#${props.id}`,
+  //   boxWidth.value/2,
+  //   boxHeight/2
+  // );
+  // text.fill = '#000000';
+  // text.size = 12;
+  // text.alignment = 'center';
+  // text.baseline = 'middle';
 })
 
 watch(boxWidth, (newWidth) => {
-  if (box && two.value && text) {
+  if (box && two.value) {
     box.width = newWidth;
     box.position.x = newWidth/2;
     two.value.width = newWidth;
-    text.position.x = newWidth/2;
+    // text.position.x = newWidth/2;
     two.value.update();
   }
 }, { immediate: true });

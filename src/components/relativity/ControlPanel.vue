@@ -13,6 +13,7 @@
       <h2>Reference Frame</h2>
       <FrameSelector
         :box-objects="boxObjects"
+        :clock-objects="clockObjects"
         :current-frame="currentReferenceFrame"
         @frame-change="emit('frame-change', $event)"
       />
@@ -20,25 +21,26 @@
 
     <div class="control-section object-controls">
       <h2>Create Objects</h2>
-      <CreateBox
+      <CreateObject
         :origin="origin"
         :current-reference-frame="currentReferenceFrame"
-        @box-created="emit('box-created', $event)"
+        @object-created="emit('object-created', $event)"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Box as BoxClass } from '@/types/Objects';
+import { Box as BoxClass, type BaseObject, Clock as ClockClass } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
 import TimeControls from './TimeControls.vue';
 import FrameSelector from './FrameSelector.vue';
-import CreateBox from './CreateBox.vue';
+import CreateObject from './CreateObject.vue';
 
 defineProps<{
   time: number;
   boxObjects: BoxClass[];
+  clockObjects: ClockClass[];
   currentReferenceFrame: number;
   origin: Position;
 }>();
@@ -47,7 +49,7 @@ const emit = defineEmits<{
   'reset': [];
   'update-time': [time: number];
   'frame-change': [frameVelocity: number];
-  'box-created': [box: BoxClass];
+  'object-created': [box: BaseObject];
 }>();
 </script>
 

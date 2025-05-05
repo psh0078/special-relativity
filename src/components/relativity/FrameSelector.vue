@@ -11,7 +11,15 @@
         :key="obj.getProperties().id"
         :value="obj.getProperties().velocityLab"
       >
-        Object #{{ obj.getProperties().id }}
+        Box #{{ obj.getProperties().id }}
+        (v = {{ formatVelocity(obj.getProperties().velocityLab) }})
+      </option>
+      <option
+        v-for="obj in clockObjects"
+        :key="obj.getProperties().id"
+        :value="obj.getProperties().velocityLab"
+      >
+        Clock #{{ obj.getProperties().id }}
         (v = {{ formatVelocity(obj.getProperties().velocityLab) }})
       </option>
     </select>
@@ -20,11 +28,15 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { Box as BoxClass } from '@/types/Objects';
+import { Box as BoxClass, Clock as ClockClass } from '@/types/Objects';
 
 const props = defineProps({
   boxObjects: {
     type: Array as () => BoxClass[],
+    default: () => []
+  },
+  clockObjects: {
+    type: Array as () => ClockClass[],
     default: () => []
   },
   currentFrame: {
