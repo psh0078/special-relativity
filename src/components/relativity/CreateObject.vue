@@ -7,10 +7,11 @@
         id="objectType"
         v-model="selectedObjectType"
         class="frame-select"
+        @change="handleObjectTypeChange"
       >
         <option value="box">Box</option>
         <option value="clock">Clock</option>
-        <!-- Add more object types here as they are implemented -->
+        <option value="flash">Flash</option>
       </select>
     </div>
     <div class="form-group">
@@ -65,7 +66,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Box, Clock, type Position, type BaseObject } from '@/types/Objects';
+import { Box, Clock, Flash, type Position, type BaseObject } from '@/types/Objects';
 import * as physics from '@/physics';
 
 const props = defineProps<{
@@ -81,7 +82,7 @@ const selectedObjectType = ref('box');
 const velocity = ref(0);
 const x0 = ref(0);
 const t0 = ref(0);
-const velocityFrame = ref('lab');
+const velocityFrame = ref('current');
 const initialConditionsFrame = ref('current');
 let nextId = 1;
 
@@ -118,11 +119,26 @@ function createObject(): void {
         velocityLab
       );
       break;
+    case 'flash':
+      object = new Flash(
+        nextId++,
+        x0Lab,
+        t0Lab
+      );
+      break;
     default:
       throw new Error(`Unsupported object type: ${selectedObjectType.value}`);
   }
 
   emit('objectCreated', object);
+}
+
+function handleObjectTypeChange(): void {
+  if (selectedObjectType.value === 'flash') {
+    velocity.value = 1;
+  } else {
+    velocity.value = 0;
+  }
 }
 </script>
 

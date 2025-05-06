@@ -1,4 +1,4 @@
-import { transformVelocityToFrame, transformTimeToFrame } from '@/physics'
+import { transformVelocityToFrame } from '@/physics'
 
 export interface Position {
   x: number;
@@ -73,22 +73,29 @@ export class Clock extends BaseObject {
       height: 40,
       color: '#4169E1',
       currentX: x0,
-      currentTime: t0
-    });
-  }
-
-  public getCurrentTime(): number {
-    return this.properties.currentTime || this.properties.initialConditions.t0;
-  }
-
-  public updateTime(labTime: number): void {
-    const x = this.properties.currentX || this.properties.initialConditions.x0;
-    this.updateProperties({
-      currentTime: transformTimeToFrame(labTime, this.properties.velocityLab, x)
     });
   }
 
   public getVelocityInCurrentFrame(frameVelocity: number): number {
     return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
+  }
+}
+
+export class Flash extends BaseObject {
+  constructor(id: number, x0: number, t0: number) {
+    super({
+      id,
+      type: 'flash',
+      initialConditions: { x0, t0 },
+      velocityLab: 1,
+      width: 20,
+      height: 20,
+      color: '#FF0000',
+      currentX: x0
+    });
+  }
+
+  public getVelocityInCurrentFrame(): number {
+    return 1;
   }
 }
