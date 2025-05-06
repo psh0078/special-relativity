@@ -23,9 +23,7 @@ import Two from 'two.js'
 import type { Rectangle } from 'two.js/src/shapes/rectangle';
 // import type { Text } from 'two.js/src/text';
 import * as physics from '@/physics';
-
-const VELOCITY_SCALE_FACTOR = 80; // this should equal the tick spacing in the coordinate system
-const VELOCITY_VERTICAL_STRETCH_FACTOR = 150;
+import { VELOCITY_SCALE_FACTOR, VELOCITY_VERTICAL_STRETCH_FACTOR } from '@/constants';
 
 const props = defineProps<{
   id: number

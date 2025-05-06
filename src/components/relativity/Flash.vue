@@ -21,9 +21,7 @@ import { ref, onMounted, shallowRef, computed } from 'vue'
 import Two from 'two.js'
 import type { Circle } from 'two.js/src/shapes/circle';
 import * as physics from '@/physics';
-
-const VELOCITY_SCALE_FACTOR = 80;
-const VELOCITY_VERTICAL_STRETCH_FACTOR = 150;
+import { VELOCITY_SCALE_FACTOR, VELOCITY_VERTICAL_STRETCH_FACTOR, DEFAULT_OBJECT_DIMENSIONS } from '@/constants';
 
 const props = defineProps<{
   id: number
@@ -48,7 +46,7 @@ const two = shallowRef<Two | null>(null);
 let flash: Circle | null = null
 const showTooltip = ref(false);
 
-const flashSize = computed(() => props.width ?? 20);
+const flashSize = computed(() => props.width ?? DEFAULT_OBJECT_DIMENSIONS.FLASH.width);
 
 const currentPosition = computed(() => {
   if (props.currentReferenceFrame === 0 && props.initialConditions.x0 !== 0) {

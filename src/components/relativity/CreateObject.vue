@@ -9,9 +9,9 @@
         class="frame-select"
         @change="handleObjectTypeChange"
       >
-        <option value="box">Box</option>
-        <option value="clock">Clock</option>
-        <option value="flash">Flash</option>
+        <option value="box">📦 Box</option>
+        <option value="clock">⏰ Clock</option>
+        <option value="flash">⚡️ Flash</option>
       </select>
     </div>
     <div class="form-group">

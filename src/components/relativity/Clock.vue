@@ -24,9 +24,7 @@ import Two from 'two.js'
 import type { Circle } from 'two.js/src/shapes/circle';
 import type { Text } from 'two.js/src/text';
 import * as physics from '@/physics';
-
-const VELOCITY_SCALE_FACTOR = 80;
-const VELOCITY_VERTICAL_STRETCH_FACTOR = 150;
+import { VELOCITY_SCALE_FACTOR, VELOCITY_VERTICAL_STRETCH_FACTOR } from '@/constants';
 
 const props = defineProps<{
   id: number
