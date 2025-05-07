@@ -1,5 +1,8 @@
 <template>
-  <div ref="container" class="coordinate-system"></div>
+  <div
+    ref="container"
+    class="coordinate-system"
+  />
 </template>
 
 <script setup lang="ts">
@@ -7,6 +10,7 @@ import { ref, onMounted, shallowRef, watch } from 'vue';
 import Two from 'two.js';
 import type { Position } from '@/types/Objects';
 import type { Line } from 'two.js/src/shapes/line';
+import { VELOCITY_SCALE_FACTOR } from '@/constants';
 const props = defineProps<{
   width: number;
   height: number;
@@ -43,15 +47,14 @@ function drawCoordinateSystem(): void {
   xAxisOrigin.stroke = '#000000';
 
   const tickLength = 10;
-  const tickSpacing = 80;
   const fontSize = 12;
 
   // To the left of origin
-  for (let x = props.origin.x; x >= 0; x -= tickSpacing) {
+  for (let x = props.origin.x; x >= 0; x -= VELOCITY_SCALE_FACTOR) {
     const tick = two.value.makeLine(x, props.origin.y - tickLength/2, x, props.origin.y + tickLength/2);
     tick.stroke = '#000000';
 
-    const distanceFromOrigin = (props.origin.x - x) / tickSpacing;
+    const distanceFromOrigin = (props.origin.x - x) / VELOCITY_SCALE_FACTOR;
     if (distanceFromOrigin !== 0) {
       const label = two.value.makeText(`-${distanceFromOrigin}`, x, props.origin.y + 20);
       label.size = fontSize;
@@ -60,11 +63,11 @@ function drawCoordinateSystem(): void {
   }
 
   // To the right of origin
-  for (let x = props.origin.x + tickSpacing; x <= props.width; x += tickSpacing) {
+  for (let x = props.origin.x + VELOCITY_SCALE_FACTOR; x <= props.width; x += VELOCITY_SCALE_FACTOR) {
     const tick = two.value.makeLine(x, props.origin.y - tickLength/2, x, props.origin.y + tickLength/2);
     tick.stroke = '#000000';
 
-    const distanceFromOrigin = (x - props.origin.x) / tickSpacing;
+    const distanceFromOrigin = (x - props.origin.x) / VELOCITY_SCALE_FACTOR;
     const label = two.value.makeText(`${distanceFromOrigin}`, x, props.origin.y + 20);
     label.size = fontSize;
     label.alignment = 'center';

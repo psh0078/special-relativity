@@ -41,6 +41,14 @@ export class BaseObject {
   public getProperties(): ObjectProperties {
     return { ...this.properties };
   }
+
+  public getVelocityInCurrentFrame(frameVelocity: number): number {
+    // this will break for flash. Flash travels at c or -c in all frames.
+    if (this.properties.type === 'flash') {
+      return 1;
+    }
+    return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
+  }
 }
 
 export class Box extends BaseObject {
@@ -55,10 +63,6 @@ export class Box extends BaseObject {
       color: '#FFA500',
       currentX: x0
     });
-  }
-
-  public getVelocityInCurrentFrame(frameVelocity: number): number {
-    return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
   }
 }
 
@@ -75,10 +79,6 @@ export class Clock extends BaseObject {
       currentX: x0,
     });
   }
-
-  public getVelocityInCurrentFrame(frameVelocity: number): number {
-    return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
-  }
 }
 
 export class Flash extends BaseObject {
@@ -93,9 +93,5 @@ export class Flash extends BaseObject {
       color: '#FF0000',
       currentX: x0
     });
-  }
-
-  public getVelocityInCurrentFrame(): number {
-    return 1;
   }
 }

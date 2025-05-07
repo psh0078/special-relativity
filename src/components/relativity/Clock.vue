@@ -1,21 +1,25 @@
 <template>
-  <div
-    ref="clockContainer"
-    class="clock-container"
-    :style="clockPositionStyle"
-    @mouseenter="showTooltip = true"
-    @mouseleave="showTooltip = false"
+  <BaseObject
+    :id="id"
+    :initial-conditions="initialConditions"
+    :current-time="currentTime"
+    :velocity="velocity"
+    :velocity-lab="velocityLab"
+    :width="clockSize"
+    :height="clockSize"
+    :current-reference-frame="currentReferenceFrame"
+    :origin="origin"
+    :current-x="currentX"
+    :show-time="true"
+    :show-lab-velocity="true"
+    @update-current-x="(id: number, x: number) => emit('updateCurrentX', id, x)"
+    @update-current-time="(tprime: number) => emit('updateCurrentTime', tprime)"
   >
-    <div v-if="showTooltip" class="tooltip">
-      <div class="tooltip-content">
-        <div>ID: #{{ id }}</div>
-        <div>x: {{ currentX.toFixed(2) }}</div>
-        <div>t': {{ currentTimeInFrame.toFixed(2) }}</div>
-        <div>v' (current frame): {{ velocity.toFixed(6) }}c</div>
-        <div>v (lab frame): {{ velocityLab.toFixed(2) }}c</div>
-      </div>
-    </div>
-  </div>
+    <div
+      ref="clockContainer"
+      class="clock-container"
+    />
+  </BaseObject>
 </template>
 
 <script setup lang="ts">
@@ -23,8 +27,9 @@ import { ref, onMounted, shallowRef, computed, watch } from 'vue'
 import Two from 'two.js'
 import type { Circle } from 'two.js/src/shapes/circle';
 import type { Text } from 'two.js/src/text';
+import BaseObject from './BaseObject.vue';
 import * as physics from '@/physics';
-import { VELOCITY_SCALE_FACTOR, VELOCITY_VERTICAL_STRETCH_FACTOR } from '@/constants';
+import { DEFAULT_OBJECT_DIMENSIONS } from '@/constants';
 
 const props = defineProps<{
   id: number
@@ -41,44 +46,16 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  updateCurrentX: [id: number, x: number]
+  (e: 'updateCurrentX', id: number, x: number): void;
+  (e: 'updateCurrentTime', tprime: number): void;
 }>();
 
 const clockContainer = ref<HTMLElement | null>(null)
 const two = shallowRef<Two | null>(null);
 let clockFace: Circle | null = null
 let timeText: Text | null = null
-const showTooltip = ref(false);
 
-const clockSize = computed(() => props.width ?? 30);
-
-const currentPosition = computed(() => {
-  if (props.currentReferenceFrame === 0 && props.initialConditions.x0 !== 0) {
-    return {
-      x: props.origin.x + props.initialConditions.x0 * VELOCITY_SCALE_FACTOR,
-      y: props.origin.y
-    }
-  } else {
-    const t0prime = physics.transformTimeToFrame(props.initialConditions.t0, props.velocity, props.initialConditions.x0);
-    const x0prime = physics.transformPositionToFrame(props.initialConditions.x0, props.velocity, t0prime);
-    const currentX = x0prime + props.velocity * (props.currentTime - t0prime);
-    const x = currentX * VELOCITY_SCALE_FACTOR + props.origin.x;
-    emit('updateCurrentX', props.id, currentX);
-    return {
-      x,
-      y: physics.vscale(3, props.velocity, VELOCITY_VERTICAL_STRETCH_FACTOR, props.origin.y * 2)
-    };
-  }
-});
-
-const clockPositionStyle = computed(() => {
-  return {
-    left: `${currentPosition.value.x - clockSize.value/2}px`,
-    top: `${currentPosition.value.y - clockSize.value/2}px`,
-    width: `${clockSize.value}px`,
-    height: `${clockSize.value}px`
-  };
-});
+const clockSize = DEFAULT_OBJECT_DIMENSIONS.CLOCK.width
 
 const currentTimeInFrame = computed(() => {
   return physics.transformTimeToFrame(
@@ -88,19 +65,27 @@ const currentTimeInFrame = computed(() => {
   );
 });
 
+watch(() => props.currentReferenceFrame, (newFrame) => {
+  if (newFrame === props.velocityLab) {
+    const currentVelocity = physics.calculateVelocityFromPosition(props.currentX, props.initialConditions.x0, props.currentTime, props.initialConditions.t0);
+    const tprime = physics.transformTimeToFrame(props.currentTime, currentVelocity, props.currentX);
+    emit('updateCurrentTime', tprime);
+  }
+}, { immediate: true });
+
 onMounted(() => {
   if (!clockContainer.value) return;
 
   two.value = new Two({
-    width: clockSize.value,
-    height: clockSize.value,
+    width: clockSize,
+    height: clockSize,
     autostart: true
   }).appendTo(clockContainer.value);
 
   clockFace = two.value.makeCircle(
-    clockSize.value/2,
-    clockSize.value/2,
-    clockSize.value/2 - 2
+    clockSize/2,
+    clockSize/2,
+    clockSize/2 - 2
   );
 
   const color = props.color || '#808080';
@@ -114,20 +99,13 @@ onMounted(() => {
   // Create time text
   timeText = two.value.makeText(
     currentTimeInFrame.value.toFixed(2),
-    clockSize.value/2,
-    clockSize.value/2
+    clockSize/2,
+    clockSize/2
   );
   timeText.fill = '#000000';
   timeText.size = 10;
   timeText.alignment = 'center';
   timeText.baseline = 'middle';
-});
-
-watch(currentTimeInFrame, (newTime) => {
-  if (timeText) {
-    timeText.value = newTime.toFixed(2);
-    two.value?.update();
-  }
 });
 </script>
 

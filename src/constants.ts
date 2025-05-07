@@ -1,4 +1,5 @@
 // Scale factor for converting between physical units and pixels
+// maybe rename to SPACING_SCALE_FACTOR
 export const VELOCITY_SCALE_FACTOR = 80;
 
 // Vertical stretch factor for velocity visualization

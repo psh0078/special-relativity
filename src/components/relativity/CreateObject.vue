@@ -80,26 +80,24 @@ const emit = defineEmits<{
 
 const selectedObjectType = ref('box');
 const velocity = ref(0);
-const x0 = ref(0);
-const t0 = ref(0);
+const x0 = ref<number>(0);
+const t0 = ref<number>(0);
 const velocityFrame = ref('current');
 const initialConditionsFrame = ref('current');
 let nextId = 1;
 
 function createObject(): void {
   let velocityLab = velocity.value;
-  let x0Lab = x0.value;
-  let t0Lab = t0.value;
-  console.log('lab values:', { velocityLab, x0Lab, t0Lab });
-
+  let x0Lab = Number(x0.value) || 0;
+  let t0Lab = Number(t0.value) || 0;
   if (velocityFrame.value === 'current') {
     velocityLab = physics.transformVelocityToLab(velocity.value, props.currentReferenceFrame);
   }
-  if (initialConditionsFrame.value === 'current') {
+  if (initialConditionsFrame.value === 'current' && props.currentReferenceFrame !== 0) {
     x0Lab = physics.transformPositionToLab(x0.value, velocityLab, t0Lab);
     t0Lab = physics.transformTimeToLab(t0.value, velocityLab, x0Lab);
   }
-  console.log('transformed values:', { velocityLab, x0Lab, t0Lab });
+  console.log('Stored lab values:', { velocityLab, x0Lab, t0Lab });
 
   let object: BaseObject;
   switch (selectedObjectType.value) {

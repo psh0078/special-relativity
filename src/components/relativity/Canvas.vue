@@ -64,7 +64,7 @@
               :key="object.getProperties().id"
               :initial-conditions="object.getProperties().initialConditions"
               :current-time="time"
-              :velocity="object.getVelocityInCurrentFrame()"
+              :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
               :velocity-lab="object.getProperties().velocityLab"
               :width="object.getProperties().width"
               :height="object.getProperties().height"

@@ -15,7 +15,10 @@
         :box-objects="boxObjects"
         :clock-objects="clockObjects"
         :current-frame="currentReferenceFrame"
+        :current-time="time"
+        :current-reference-frame="currentReferenceFrame"
         @frame-change="emit('frame-change', $event)"
+        @time-change="emit('update-time', $event)"
       />
     </div>
 
