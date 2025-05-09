@@ -6,22 +6,25 @@
     @mouseenter="showTooltip = true"
     @mouseleave="showTooltip = false"
   >
-    <div
-      v-if="showTooltip"
-      class="tooltip"
-    >
-      <div class="tooltip-content">
-        <div>ID: #{{ id }}</div>
-        <div>x (current frame): {{ currentX.toFixed(5) }}</div>
-        <div v-if="showTime">
-          t' (current frame): {{ currentTimeInFrame.toFixed(2) }}
-        </div>
-        <div>v' (current frame): {{ velocity.toFixed(6) }}c</div>
-        <div v-if="showLabVelocity">
-          v (lab frame): {{ velocityLab.toFixed(2) }}c
+    <Teleport to="body">
+      <div
+        v-if="showTooltip"
+        class="tooltip"
+        :style="tooltipStyle"
+      >
+        <div class="tooltip-content">
+          <div>ID: #{{ id }}</div>
+          <div>x (current frame): {{ currentX.toFixed(5) }}</div>
+          <div v-if="showTime">
+            t' (current frame): {{ currentTimeInFrame.toFixed(2) }}
+          </div>
+          <div>v' (current frame): {{ velocity.toFixed(6) }}c</div>
+          <div v-if="showLabVelocity">
+            v (lab frame): {{ velocityLab.toFixed(2) }}c
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
     <slot />
   </div>
 </template>
@@ -57,10 +60,6 @@ const currentPosition = computed(() => {
   const t0prime = physics.transformTimeToFrame(props.initialConditions.t0, props.currentReferenceFrame, props.initialConditions.x0);
   const x0prime = physics.transformPositionToFrame(props.initialConditions.x0, props.currentReferenceFrame, props.initialConditions.t0);
   const currentX = x0prime + props.velocity * (props.currentTime - t0prime);
-  // console.log('props', props.initialConditions, props.velocity, props.currentTime);
-  // console.log('currentX', currentX);
-  // console.log('x0prime', x0prime);
-  // console.log('t0prime', t0prime);
   return {
     x: currentX * VELOCITY_SCALE_FACTOR + props.origin.x,
     y: physics.vscale(3, props.velocity, VELOCITY_VERTICAL_STRETCH_FACTOR, props.origin.y * 2)
@@ -84,6 +83,16 @@ const currentTimeInFrame = computed(() => {
   );
 });
 
+const tooltipStyle = computed(() => {
+  if (!objectContainer.value) return {};
+
+  const rect = objectContainer.value.getBoundingClientRect();
+  return {
+    left: `${rect.left + rect.width / 2}px`,
+    top: `${rect.top - 130}px`,
+  };
+});
+
 watch(() => currentPosition.value.x, (newX) => {
   const currentX = (newX - props.origin.x) / VELOCITY_SCALE_FACTOR;
   emit('updateCurrentX', props.id, currentX);
@@ -98,9 +107,7 @@ watch(() => currentPosition.value.x, (newX) => {
 }
 
 .tooltip {
-  position: absolute;
-  top: -130px;
-  left: 50%;
+  position: fixed;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
@@ -108,7 +115,8 @@ watch(() => currentPosition.value.x, (newX) => {
   border-radius: 4px;
   font-size: 12px;
   white-space: nowrap;
-  z-index: 1000;
+  z-index: 9999;
+  pointer-events: none;
 }
 
 .tooltip-content {

@@ -88,8 +88,8 @@ let nextId = 1;
 
 function createObject(): void {
   let velocityLab = velocity.value;
-  let x0Lab = Number(x0.value) || 0;
-  let t0Lab = Number(t0.value) || 0;
+  let x0Lab = Number(x0.value);
+  let t0Lab = Number(t0.value);
   if (velocityFrame.value === 'current') {
     velocityLab = physics.transformVelocityToLab(velocity.value, props.currentReferenceFrame);
   }

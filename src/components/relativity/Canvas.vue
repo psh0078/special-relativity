@@ -93,6 +93,9 @@ import { BaseObject, Box as BoxClass, Clock as ClockClass, Flash as FlashClass }
 import type { Position } from '@/types/Objects';
 import * as physics from '@/physics';
 
+/**
+ * TODO: make these constants configurable and move them to constants.ts
+ */
 const canvasWidth = 2000;
 const visibleWidth = 700;
 const height = 400;
