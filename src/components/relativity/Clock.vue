@@ -73,6 +73,14 @@ watch(() => props.currentReferenceFrame, (newFrame) => {
   }
 }, { immediate: true });
 
+// Add watch for currentTimeInFrame to update the time display
+watch(currentTimeInFrame, (newTime) => {
+  if (timeText && two.value) {
+    timeText.value = newTime.toFixed(2);
+    two.value.update();
+  }
+}, { immediate: true });
+
 onMounted(() => {
   if (!clockContainer.value) return;
 
