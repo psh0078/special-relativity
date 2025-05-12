@@ -25,6 +25,9 @@
               :origin="origin"
               :lab-frame-box-y="labFrameBoxY"
             />
+            /**
+            * TODO: Refactoring Opportunity: make this a component
+            */
             <Box
               v-for="object in boxObjects"
               :id="object.getProperties().id"
@@ -39,7 +42,7 @@
               :current-reference-frame="currentReferenceFrame"
               :origin="origin"
               :current-x="object.getProperties().currentX!"
-              @update-current-x="updateBoxCurrentX"
+              @update-current-x="(id, x) => updateObjectCurrentX(id, x)"
               @update-current-time="updateCurrentTime"
             />
             <Clock
@@ -56,7 +59,7 @@
               :current-reference-frame="currentReferenceFrame"
               :origin="origin"
               :current-x="object.getProperties().currentX!"
-              @update-current-x="updateClockCurrentX"
+              @update-current-x="(id, x) => updateObjectCurrentX(id, x)"
             />
             <Flash
               v-for="object in flashObjects"
@@ -72,7 +75,7 @@
               :current-reference-frame="currentReferenceFrame"
               :origin="origin"
               :current-x="object.getProperties().currentX!"
-              @update-current-x="updateFlashCurrentX"
+              @update-current-x="(id, x) => updateObjectCurrentX(id, x)"
             />
           </div>
         </CanvasNavigation>
@@ -138,27 +141,13 @@ function handleFrameChange(frameVelocity: number) {
   console.log('Reference Frame changed to ', frameVelocity);
 }
 
-function updateBoxCurrentX(id: number, x: number) {
-  const box = objects.value.find(obj => obj.getProperties().id === id);
-  if (box) {
-    box.updateProperties({ currentX: x });
+function updateObjectCurrentX(id: number, x: number) {
+  const object = objects.value.find(obj => obj.getProperties().id === id);
+  if (object) {
+    object.updateProperties({ currentX: x });
   }
 }
 
-function updateClockCurrentX(id: number, x: number) {
-  const clock = objects.value.find(obj => obj.getProperties().id === id);
-  if (clock) {
-    clock.updateProperties({ currentX: x });
-  }
-}
-
-function updateFlashCurrentX(id: number, x: number) {
-  const flash = objects.value.find(obj => obj.getProperties().id === id);
-  if (flash) {
-    flash.updateProperties({ currentX: x });
-  }
-
-}
 function updateCurrentTime(tprime: number) {
   time.value = tprime;
   console.log('Current time changed to ', time.value);
