@@ -19,3 +19,9 @@ export const DEFAULT_OBJECT_DIMENSIONS = {
     height: 20
   }
 } as const;
+
+export const DEFAULT_TIME_CONTROLS_PARAMS = {
+  tMin: 0,
+  tMax: 10,
+  tStep: 0.1
+} as const;

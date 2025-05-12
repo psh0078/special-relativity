@@ -121,7 +121,8 @@ function createObject(): void {
       object = new Flash(
         nextId++,
         x0Lab,
-        t0Lab
+        t0Lab,
+        velocityLab
       );
       break;
     default:

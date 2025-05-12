@@ -43,10 +43,6 @@ export class BaseObject {
   }
 
   public getVelocityInCurrentFrame(frameVelocity: number): number {
-    // this will break for flash. Flash travels at c or -c in all frames.
-    if (this.properties.type === 'flash') {
-      return 1;
-    }
     return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
   }
 }
@@ -82,12 +78,12 @@ export class Clock extends BaseObject {
 }
 
 export class Flash extends BaseObject {
-  constructor(id: number, x0: number, t0: number) {
+  constructor(id: number, x0: number, t0: number, velocityLab: number = 1) {
     super({
       id,
       type: 'flash',
       initialConditions: { x0, t0 },
-      velocityLab: 1,
+      velocityLab,
       width: 20,
       height: 20,
       color: '#FF0000',
