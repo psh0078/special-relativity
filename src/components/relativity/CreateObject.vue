@@ -25,12 +25,16 @@
           min="-1"
           max="1"
           class="form-input"
+          :class="{ 'error-input': isInvalidFlashVelocity }"
           placeholder="Enter velocity"
         >
         <select v-model="velocityFrame" class="frame-select">
           <option value="lab">Lab Frame</option>
           <option value="current">Current Frame</option>
         </select>
+      </div>
+      <div v-if="isInvalidFlashVelocity" class="error-message">
+        Flash velocity must be either 1 or -1
       </div>
     </div>
     <div class="form-group">
@@ -65,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Box, Clock, Flash, type Position, type BaseObject } from '@/types/Objects';
 import * as physics from '@/physics';
 
@@ -84,9 +88,18 @@ const x0 = ref<number>(0);
 const t0 = ref<number>(0);
 const velocityFrame = ref('current');
 const initialConditionsFrame = ref('current');
+
+const isInvalidFlashVelocity = computed(() => {
+  return selectedObjectType.value === 'flash' && Math.abs(velocity.value) !== 1;
+});
+
 let nextId = 1;
 
 function createObject(): void {
+  if (isInvalidFlashVelocity.value) {
+    return;
+  }
+
   let velocityLab = velocity.value;
   let x0Lab = Number(x0.value);
   let t0Lab = Number(t0.value);
@@ -205,5 +218,19 @@ label {
   border-radius: 4px;
   font-size: 14px;
   min-width: 100px;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.error-input {
+  border-color: #e74c3c !important;
+}
+
+.error-input:focus {
+  border-color: #e74c3c !important;
 }
 </style>
