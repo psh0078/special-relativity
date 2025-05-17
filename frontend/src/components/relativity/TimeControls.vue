@@ -93,7 +93,7 @@ let animationFrameId: number | null = null;
 
 const tMin = ref(-10);
 const tMax = ref(10);
-const tStep = ref(0.1);
+const tStep = ref(0.01);
 const showParams = ref(false);
 
 const displayTime = computed(() => props.time);

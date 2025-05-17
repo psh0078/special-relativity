@@ -29,6 +29,10 @@
         :current-reference-frame="currentReferenceFrame"
         @object-created="emit('object-created', $event)"
       />
+      <DeleteObject
+        :objects="objects"
+        @delete-object="emit('delete-object', $event)"
+      />
     </div>
   </div>
 </template>
@@ -39,9 +43,11 @@ import type { Position } from '@/types/Objects';
 import TimeControls from './TimeControls.vue';
 import FrameSelector from './FrameSelector.vue';
 import CreateObject from './CreateObject.vue';
+import DeleteObject from './DeleteObject.vue';
 
 defineProps<{
   time: number;
+  objects: BaseObject[];
   boxObjects: BoxClass[];
   clockObjects: ClockClass[];
   currentReferenceFrame: number;
@@ -53,6 +59,7 @@ const emit = defineEmits<{
   'update-time': [time: number];
   'frame-change': [frameVelocity: number];
   'object-created': [box: BaseObject];
+  'delete-object': [objectId: number];
 }>();
 </script>
 

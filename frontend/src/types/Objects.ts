@@ -24,11 +24,26 @@ export interface ObjectProperties {
   currentTime?: number;
 }
 
-export class BaseObject {
+export interface BaseObject {
+  updateProperties(newProps: Partial<ObjectProperties>): void;
+  getProperties(): ObjectProperties;
+  getVelocityInCurrentFrame(frameVelocity: number): number;
+}
+
+export class Box implements BaseObject {
   protected properties: ObjectProperties;
 
-  constructor(props: ObjectProperties) {
-    this.properties = props;
+  constructor(id: number, x0: number, t0:number, velocityLab: number) {
+    this.properties = {
+      id,
+      type: 'box',
+      initialConditions: { x0, t0},
+      velocityLab,
+      width: 80,
+      height: 20,
+      color: '#FFA500',
+      currentX: x0
+    };
   }
 
   public updateProperties(newProps: Partial<ObjectProperties>): void {
@@ -47,24 +62,11 @@ export class BaseObject {
   }
 }
 
-export class Box extends BaseObject {
-  constructor(id: number, x0: number, t0:number, velocityLab: number) {
-    super({
-      id,
-      type: 'box',
-      initialConditions: { x0, t0},
-      velocityLab,
-      width: 80,
-      height: 20,
-      color: '#FFA500',
-      currentX: x0
-    });
-  }
-}
+export class Clock implements BaseObject {
+  protected properties: ObjectProperties;
 
-export class Clock extends BaseObject {
   constructor(id: number, x0: number, t0: number, velocityLab: number) {
-    super({
+    this.properties = {
       id,
       type: 'clock',
       initialConditions: { x0, t0 },
@@ -73,13 +75,30 @@ export class Clock extends BaseObject {
       height: 40,
       color: '#4169E1',
       currentX: x0,
-    });
+    };
+  }
+
+  public updateProperties(newProps: Partial<ObjectProperties>): void {
+    this.properties = {
+      ...this.properties,
+      ...newProps
+    };
+  }
+
+  public getProperties(): ObjectProperties {
+    return { ...this.properties };
+  }
+
+  public getVelocityInCurrentFrame(frameVelocity: number): number {
+    return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
   }
 }
 
-export class Flash extends BaseObject {
+export class Flash implements BaseObject {
+  protected properties: ObjectProperties;
+
   constructor(id: number, x0: number, t0: number, velocityLab: number = 1) {
-    super({
+    this.properties = {
       id,
       type: 'flash',
       initialConditions: { x0, t0 },
@@ -88,6 +107,21 @@ export class Flash extends BaseObject {
       height: 20,
       color: '#FF0000',
       currentX: x0
-    });
+    };
+  }
+
+  public updateProperties(newProps: Partial<ObjectProperties>): void {
+    this.properties = {
+      ...this.properties,
+      ...newProps
+    };
+  }
+
+  public getProperties(): ObjectProperties {
+    return { ...this.properties };
+  }
+
+  public getVelocityInCurrentFrame(frameVelocity: number): number {
+    return transformVelocityToFrame(this.properties.velocityLab, frameVelocity);
   }
 }

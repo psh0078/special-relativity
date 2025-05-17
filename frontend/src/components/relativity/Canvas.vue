@@ -4,6 +4,7 @@
     <div class="layout">
       <ControlPanel
         :time="time"
+        :objects="objects"
         :box-objects="boxObjects"
         :clock-objects="clockObjects"
         :current-reference-frame="currentReferenceFrame"
@@ -12,6 +13,7 @@
         @update-time="time = $event"
         @frame-change="handleFrameChange"
         @object-created="addObject"
+        @delete-object="deleteObject"
       />
       <div class="canvas-area">
         <CanvasNavigation
@@ -92,7 +94,7 @@ import Flash from './Flash.vue';
 import ControlPanel from './ControlPanel.vue';
 import CoordinateSystem from './CoordinateSystem.vue';
 import CanvasNavigation from './CanvasNavigation.vue';
-import { BaseObject, Box as BoxClass, Clock as ClockClass, Flash as FlashClass } from '@/types/Objects';
+import { type BaseObject, Box as BoxClass, Clock as ClockClass, Flash as FlashClass } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
 import * as physics from '@/physics';
 
@@ -134,6 +136,11 @@ const labFrameBoxY = computed(() => {
 function addObject(object: BaseObject) {
   console.log('Object added:', object.getProperties());
   objects.value.push(object);
+}
+
+function deleteObject(id: number) {
+  objects.value = objects.value.filter(obj => obj.getProperties().id !== id);
+  console.log(objects.value);
 }
 
 function handleFrameChange(frameVelocity: number) {

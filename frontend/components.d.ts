@@ -17,6 +17,7 @@ declare module 'vue' {
     CreateBox: typeof import('./src/components/relativity/CreateBox.vue')['default']
     CreateClock: typeof import('./src/components/relativity/CreateClock.vue')['default']
     CreateObject: typeof import('./src/components/relativity/CreateObject.vue')['default']
+    DeleteObject: typeof import('./src/components/relativity/DeleteObject.vue')['default']
     Flash: typeof import('./src/components/relativity/Flash.vue')['default']
     FrameSelector: typeof import('./src/components/relativity/FrameSelector.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
