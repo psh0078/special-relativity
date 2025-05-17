@@ -18,5 +18,5 @@ pnpm-debug.log*
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
+*.slnl
 *.sw?
