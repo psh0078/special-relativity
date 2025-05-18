@@ -18,12 +18,15 @@ declare module 'vue' {
     CreateClock: typeof import('./src/components/relativity/CreateClock.vue')['default']
     CreateObject: typeof import('./src/components/relativity/CreateObject.vue')['default']
     DeleteObject: typeof import('./src/components/relativity/DeleteObject.vue')['default']
+    EventList: typeof import('./src/components/relativity/EventList.vue')['default']
     Flash: typeof import('./src/components/relativity/Flash.vue')['default']
     FrameSelector: typeof import('./src/components/relativity/FrameSelector.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    Navigation: typeof import('./src/components/Navigation.vue')['default']
     ObjectCreator: typeof import('./src/components/relativity/ObjectCreator.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SaveEvent: typeof import('./src/components/relativity/SaveEvent.vue')['default']
     TimeControls: typeof import('./src/components/relativity/TimeControls.vue')['default']
   }
 }

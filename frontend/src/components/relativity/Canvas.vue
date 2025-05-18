@@ -1,6 +1,6 @@
 <template>
   <div class="relativity-simulator">
-    <h1 class="title">Special Relativity Simulator</h1>
+    <!-- <h1 class="title">Special Relativity Simulator</h1> -->
     <div class="layout">
       <ControlPanel
         :time="time"

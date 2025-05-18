@@ -34,6 +34,15 @@
         @delete-object="emit('delete-object', $event)"
       />
     </div>
+
+    <div class="control-section save-controls">
+      <h2>Save Event</h2>
+      <SaveEvent
+        :objects="objects"
+        :current-time="time"
+        :current-reference-frame="currentReferenceFrame"
+      />
+    </div>
   </div>
 </template>
 
@@ -44,6 +53,7 @@ import TimeControls from './TimeControls.vue';
 import FrameSelector from './FrameSelector.vue';
 import CreateObject from './CreateObject.vue';
 import DeleteObject from './DeleteObject.vue';
+import SaveEvent from './SaveEvent.vue';
 
 defineProps<{
   time: number;
