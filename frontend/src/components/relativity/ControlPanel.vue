@@ -12,8 +12,7 @@
     <div class="control-section frame-controls">
       <h2>Reference Frame</h2>
       <FrameSelector
-        :box-objects="boxObjects"
-        :clock-objects="clockObjects"
+        :objects="objects"
         :current-frame="currentReferenceFrame"
         :current-time="time"
         :current-reference-frame="currentReferenceFrame"
@@ -47,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { Box as BoxClass, type BaseObject, Clock as ClockClass } from '@/types/Objects';
+import type { BaseObject } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
 import TimeControls from './TimeControls.vue';
 import FrameSelector from './FrameSelector.vue';
@@ -58,8 +57,6 @@ import SaveEvent from './SaveEvent.vue';
 defineProps<{
   time: number;
   objects: BaseObject[];
-  boxObjects: BoxClass[];
-  clockObjects: ClockClass[];
   currentReferenceFrame: number;
   origin: Position;
 }>();
@@ -68,7 +65,7 @@ const emit = defineEmits<{
   'reset': [];
   'update-time': [time: number];
   'frame-change': [frameVelocity: number];
-  'object-created': [box: BaseObject];
+  'object-created': [object: BaseObject];
   'delete-object': [objectId: number];
 }>();
 </script>

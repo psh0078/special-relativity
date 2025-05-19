@@ -7,19 +7,11 @@
     >
       <option :value="null">Lab Frame (v = 0c)</option>
       <option
-        v-for="obj in boxObjects"
+        v-for="obj in frameObjects"
         :key="obj.getProperties().id"
         :value="obj.getProperties().id"
       >
-        Box #{{ obj.getProperties().id }}
-        (v = {{ formatVelocity(obj.getProperties().velocityLab) }})
-      </option>
-      <option
-        v-for="obj in clockObjects"
-        :key="obj.getProperties().id"
-        :value="obj.getProperties().id"
-      >
-        Clock #{{ obj.getProperties().id }}
+        {{ obj.getProperties().type === 'box' ? 'Box' : 'Clock' }} #{{ obj.getProperties().id }}
         (v = {{ formatVelocity(obj.getProperties().velocityLab) }})
       </option>
     </select>
@@ -28,46 +20,39 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { Box as BoxClass, Clock as ClockClass } from '@/types/Objects';
+import type { BaseObject } from '@/types/Objects';
 import * as physics from '@/physics';
 
-const props = defineProps({
-  boxObjects: {
-    type: Array as () => BoxClass[],
-    default: () => []
-  },
-  clockObjects: {
-    type: Array as () => ClockClass[],
-    default: () => []
-  },
-  currentFrame: {
-    type: Number,
-    default: 0
-  },
-  currentTime: {
-    type: Number,
-    required: true
-  },
-  currentReferenceFrame: {
-    type: Number,
-    required: true
-  }
-})
+const props = defineProps<{
+  objects: BaseObject[];
+  currentFrame: number;
+  currentTime: number;
+  currentReferenceFrame: number;
+}>();
 
-const emit = defineEmits(['frame-change', 'time-change']);
+const emit = defineEmits<{
+  'frame-change': [frameVelocity: number];
+  'time-change': [time: number];
+}>();
 
 const selectedObjectId = ref<number | null>(null);
 
+const frameObjects = computed(() =>
+  props.objects.filter(obj =>
+    obj.getProperties().type === 'box' || obj.getProperties().type === 'clock'
+  )
+);
+
 const selectedFrame = computed(() => {
   if (selectedObjectId.value === null) return 0;
-  const obj = [...props.boxObjects, ...props.clockObjects].find(
+  const obj = frameObjects.value.find(
     obj => obj.getProperties().id === selectedObjectId.value
   );
   return obj?.getProperties().velocityLab ?? 0;
 });
 
 watch(() => props.currentFrame, (newValue) => {
-  const obj = [...props.boxObjects, ...props.clockObjects].find(
+  const obj = frameObjects.value.find(
     obj => obj.getProperties().velocityLab === newValue
   );
   selectedObjectId.value = obj?.getProperties().id ?? null;
@@ -75,7 +60,7 @@ watch(() => props.currentFrame, (newValue) => {
 
 function onFrameChange() {
   emit('frame-change', selectedFrame.value);
-  const selectedObject = [...props.boxObjects, ...props.clockObjects].find(
+  const selectedObject = frameObjects.value.find(
     obj => obj.getProperties().id === selectedObjectId.value
   );
   const currentX = selectedObject?.getProperties().currentX ?? 0;

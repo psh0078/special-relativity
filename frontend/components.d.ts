@@ -24,6 +24,8 @@ declare module 'vue' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Navigation: typeof import('./src/components/Navigation.vue')['default']
     ObjectCreator: typeof import('./src/components/relativity/ObjectCreator.vue')['default']
+    ObjectInfoPanel: typeof import('./src/components/relativity/ObjectInfoPanel.vue')['default']
+    ObjectRenderer: typeof import('./src/components/relativity/ObjectRenderer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SaveEvent: typeof import('./src/components/relativity/SaveEvent.vue')['default']

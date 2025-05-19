@@ -5,8 +5,6 @@
       <ControlPanel
         :time="time"
         :objects="objects"
-        :box-objects="boxObjects"
-        :clock-objects="clockObjects"
         :current-reference-frame="currentReferenceFrame"
         :origin="origin"
         @reset="time = 0"
@@ -27,74 +25,37 @@
               :origin="origin"
               :lab-frame-box-y="labFrameBoxY"
             />
-            /**
-            * TODO: Refactoring Opportunity: make this a component
-            */
-            <Box
-              v-for="object in boxObjects"
-              :id="object.getProperties().id"
+            <ObjectRenderer
+              v-for="object in objects"
               :key="object.getProperties().id"
-              :initial-conditions="object.getProperties().initialConditions"
+              :object="object"
               :current-time="time"
-              :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
-              :velocity-lab="object.getProperties().velocityLab"
-              :width="object.getProperties().width"
-              :height="object.getProperties().height"
-              :color="object.getProperties().color"
               :current-reference-frame="currentReferenceFrame"
               :origin="origin"
-              :current-x="object.getProperties().currentX!"
-              @update-current-x="(id, x) => updateObjectCurrentX(id, x)"
+              @update-current-x="updateObjectCurrentX"
               @update-current-time="updateCurrentTime"
-            />
-            <Clock
-              v-for="object in clockObjects"
-              :id="object.getProperties().id"
-              :key="object.getProperties().id"
-              :initial-conditions="object.getProperties().initialConditions"
-              :current-time="time"
-              :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
-              :velocity-lab="object.getProperties().velocityLab"
-              :width="object.getProperties().width"
-              :height="object.getProperties().height"
-              :color="object.getProperties().color"
-              :current-reference-frame="currentReferenceFrame"
-              :origin="origin"
-              :current-x="object.getProperties().currentX!"
-              @update-current-x="(id, x) => updateObjectCurrentX(id, x)"
-            />
-            <Flash
-              v-for="object in flashObjects"
-              :id="object.getProperties().id"
-              :key="object.getProperties().id"
-              :initial-conditions="object.getProperties().initialConditions"
-              :current-time="time"
-              :velocity="object.getVelocityInCurrentFrame(currentReferenceFrame)"
-              :velocity-lab="object.getProperties().velocityLab"
-              :width="object.getProperties().width"
-              :height="object.getProperties().height"
-              :color="object.getProperties().color"
-              :current-reference-frame="currentReferenceFrame"
-              :origin="origin"
-              :current-x="object.getProperties().currentX!"
-              @update-current-x="(id, x) => updateObjectCurrentX(id, x)"
+              @show-object-info="handleShowObjectInfo"
+              @hide-object-info="handleHideObjectInfo"
             />
           </div>
         </CanvasNavigation>
       </div>
     </div>
+    <ObjectInfoPanel
+      :object-info="selectedObjectInfo"
+      :visible="showObjectInfo"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
-import Box from './Box.vue';
-import Clock from './Clock.vue';
-import Flash from './Flash.vue';
+import ObjectRenderer from './ObjectRenderer.vue';
 import ControlPanel from './ControlPanel.vue';
 import CoordinateSystem from './CoordinateSystem.vue';
 import CanvasNavigation from './CanvasNavigation.vue';
-import { type BaseObject, Box as BoxClass, Clock as ClockClass, Flash as FlashClass } from '@/types/Objects';
+import ObjectInfoPanel from './ObjectInfoPanel.vue';
+import { type BaseObject } from '@/types/Objects';
 import type { Position } from '@/types/Objects';
 import * as physics from '@/physics';
 
@@ -114,24 +75,23 @@ const time = ref<number>(0);
 const currentReferenceFrame = ref<number>(0);
 const objects = ref<BaseObject[]>([]);
 
-const boxObjects = computed(() =>
-  objects.value.filter(obj => obj.getProperties().type === 'box') as BoxClass[]
-);
-
-const clockObjects = computed(() =>
-  objects.value.filter(obj => obj.getProperties().type === 'clock') as ClockClass[]
-);
-
-const flashObjects = computed(() =>
-  objects.value.filter(obj => obj.getProperties().type === 'flash') as FlashClass[]
-);
-
 const labFrameBoxY = computed(() => {
-  const labFrameBox = boxObjects.value.find(box => box.getProperties().velocityLab === 0);
+  const labFrameBox = objects.value.find(obj =>
+    obj.getProperties().type === 'box' && obj.getProperties().velocityLab === 0
+  );
   if (!labFrameBox) return null;
   const velocityInCurrentFrame = physics.transformVelocityToFrame(0, currentReferenceFrame.value);
   return physics.vscale(3, velocityInCurrentFrame, 150, origin.y * 2);
 });
+
+const selectedObjectInfo = ref<{
+  id: number;
+  x: number;
+  time?: number;
+  velocity: number;
+  velocityLab?: number;
+} | null>(null);
+const showObjectInfo = ref(false);
 
 function addObject(object: BaseObject) {
   console.log('Object added:', object.getProperties());
@@ -158,6 +118,22 @@ function updateObjectCurrentX(id: number, x: number) {
 function updateCurrentTime(tprime: number) {
   time.value = tprime;
   console.log('Current time changed to ', time.value);
+}
+
+function handleShowObjectInfo(info: {
+  id: number;
+  x: number;
+  time?: number;
+  velocity: number;
+  velocityLab?: number;
+}) {
+  selectedObjectInfo.value = info;
+  showObjectInfo.value = true;
+}
+
+function handleHideObjectInfo() {
+  showObjectInfo.value = false;
+  selectedObjectInfo.value = null;
 }
 </script>
 
