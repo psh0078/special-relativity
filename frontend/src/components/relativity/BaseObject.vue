@@ -3,28 +3,9 @@
     ref="objectContainer"
     class="object-container"
     :style="objectPositionStyle"
-    @mouseenter="showTooltip = true"
-    @mouseleave="showTooltip = false"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
   >
-    <Teleport to="body">
-      <div
-        v-if="showTooltip"
-        class="tooltip"
-        :style="tooltipStyle"
-      >
-        <div class="tooltip-content">
-          <div>ID: #{{ id }}</div>
-          <div>x (current frame): {{ currentX.toFixed(5) }}</div>
-          <div v-if="showTime">
-            t' (current frame): {{ currentTimeInFrame.toFixed(2) }}
-          </div>
-          <div>v' (current frame): {{ velocity.toFixed(6) }}c</div>
-          <div v-if="showLabVelocity">
-            v (lab frame): {{ velocityLab.toFixed(2) }}c
-          </div>
-        </div>
-      </div>
-    </Teleport>
     <slot />
   </div>
 </template>
@@ -51,10 +32,11 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'updateCurrentX', id: number, x: number): void;
+  (e: 'showObjectInfo', info: { id: number; x: number; time?: number; velocity: number; velocityLab?: number }): void;
+  (e: 'hideObjectInfo'): void;
 }>();
 
-const objectContainer = ref<HTMLElement | null>(null)
-const showTooltip = ref(false);
+const objectContainer = ref<HTMLElement | null>(null);
 
 const currentPosition = computed(() => {
   const t0prime = physics.transformTimeToFrame(props.initialConditions.t0, props.currentReferenceFrame, props.initialConditions.x0);
@@ -83,15 +65,19 @@ const currentTimeInFrame = computed(() => {
   );
 });
 
-const tooltipStyle = computed(() => {
-  if (!objectContainer.value) return {};
+function handleMouseEnter() {
+  emit('showObjectInfo', {
+    id: props.id,
+    x: props.currentX,
+    time: props.showTime ? currentTimeInFrame.value : undefined,
+    velocity: props.velocity,
+    velocityLab: props.showLabVelocity ? props.velocityLab : undefined
+  });
+}
 
-  const rect = objectContainer.value.getBoundingClientRect();
-  return {
-    left: `${rect.left + rect.width / 2}px`,
-    top: `${rect.top - 130}px`,
-  };
-});
+function handleMouseLeave() {
+  emit('hideObjectInfo');
+}
 
 watch(() => currentPosition.value.x, (newX) => {
   const currentX = (newX - props.origin.x) / VELOCITY_SCALE_FACTOR;
@@ -104,35 +90,5 @@ watch(() => currentPosition.value.x, (newX) => {
   position: absolute;
   pointer-events: auto;
   mix-blend-mode: multiply;
-}
-
-.tooltip {
-  position: fixed;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 9999;
-  pointer-events: none;
-}
-
-.tooltip-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.tooltip::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 5px 5px 0;
-  border-style: solid;
-  border-color: rgba(0, 0, 0, 0.8) transparent transparent;
 }
 </style>
