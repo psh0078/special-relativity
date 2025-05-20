@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class ObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Object
-        fields = ['id', 'name', 'velocityLab', 'x0Lab', 't0Lab']
+        fields = ['id', 'type', 'object_id', 'velocityLab', 'x0Lab', 't0Lab']
         read_only_fields = ['id']
 
 class EventSerializer(serializers.ModelSerializer):

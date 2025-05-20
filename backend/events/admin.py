@@ -14,6 +14,6 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(Object)
 class ObjectAdmin(admin.ModelAdmin):
-    list_display = ('name', 'event', 'velocityLab', 'x0Lab', 't0Lab')
+    list_display = ('type', 'object_id', 'event', 'velocityLab', 'x0Lab', 't0Lab')
     list_filter = ('event',)
-    search_fields = ('name', 'event__name')
+    search_fields = ('type', 'object_id', 'event__name')

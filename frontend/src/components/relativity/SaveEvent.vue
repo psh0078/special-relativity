@@ -63,7 +63,8 @@ const saveEvent = async () => {
       objects: props.objects.map(obj => {
         const props = obj.getProperties();
         return {
-          name: `${props.type}-${props.id}`,
+          object_id: props.id,
+          type: props.type,
           velocityLab: props.velocityLab,
           x0Lab: props.initialConditions.x0,
           t0Lab: props.initialConditions.t0
