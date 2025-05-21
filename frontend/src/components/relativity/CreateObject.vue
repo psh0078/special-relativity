@@ -146,9 +146,9 @@ function createObject(): void {
   if (velocityFrame.value === 'current') {
     velocityLab = physics.transformVelocityToLab(velocity.value, props.currentReferenceFrame);
   }
-  if (initialConditionsFrame.value === 'current' && props.currentReferenceFrame !== 0) {
-    x0Lab = physics.transformPositionToLab(x0.value, velocityLab, t0Lab);
-    t0Lab = physics.transformTimeToLab(t0.value, velocityLab, x0Lab);
+  if (initialConditionsFrame.value === 'current') {
+    x0Lab = physics.transformPositionToLab(x0.value, props.currentReferenceFrame, t0.value);
+    t0Lab = physics.transformTimeToLab(t0.value, props.currentReferenceFrame, x0.value);
   }
   console.log('Stored lab values:', { velocityLab, x0Lab, t0Lab });
 
