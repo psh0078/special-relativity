@@ -15,8 +15,8 @@
     :show-time="object.getProperties().type === 'clock'"
     :show-lab-velocity="object.getProperties().type === 'box'"
     @update-current-x="(id, x) => $emit('update-current-x', id, x)"
-    @update-current-time="(time) => $emit('update-current-time', time)"
-    @show-object-info="(info) => $emit('show-object-info', info)"
+    @update-current-time="(time: number) => $emit('update-current-time', time)"
+    @show-object-info="(info: ObjectInfo) => $emit('show-object-info', info)"
     @hide-object-info="$emit('hide-object-info')"
   />
 </template>
@@ -29,6 +29,8 @@ import Box from './Box.vue';
 import Clock from './Clock.vue';
 import Flash from './Flash.vue';
 
+type ObjectInfo = { id: number; x: number; time?: number; velocity: number; velocityLab?: number };
+
 const props = defineProps<{
   object: BaseObject;
   currentTime: number;
@@ -39,7 +41,7 @@ const props = defineProps<{
 defineEmits<{
   (e: 'update-current-x', id: number, x: number): void;
   (e: 'update-current-time', time: number): void;
-  (e: 'show-object-info', info: { id: number; x: number; time?: number; velocity: number; velocityLab?: number }): void;
+  (e: 'show-object-info', info: ObjectInfo): void;
   (e: 'hide-object-info'): void;
 }>();
 
