@@ -2,6 +2,11 @@
 
 An interactive simulator for visualizing scenarios in special relativity. Built with a Vue 3 frontend and Django REST backend.
 
+## TODO's
+- [ ] Create an API client and configure the port number using an environment variable instead of hardcoding it in each request.
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: Vue.js 3, TypeScript, Vite, Vuetify, Two.js
