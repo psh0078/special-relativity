@@ -18,7 +18,10 @@
           :canvas-width="canvasWidth"
           :visible-width="visibleWidth"
         >
-          <div class="canvas-container">
+          <div
+            class="canvas-container"
+            :style="{ width: `${canvasWidth}px` }"
+          >
             <CoordinateSystem
               :width="canvasWidth"
               :height="height"
@@ -62,7 +65,7 @@ import * as physics from '@/physics';
 /**
  * TODO: make these constants configurable and move them to constants.ts
  */
-const canvasWidth = 2000;
+const canvasWidth = 4000;
 const visibleWidth = 700;
 const height = 400;
 
@@ -159,7 +162,6 @@ function handleHideObjectInfo() {
 }
 
 .canvas-container {
-  width: 2000px;
   height: 400px;
   position: relative;
   background-color: white;

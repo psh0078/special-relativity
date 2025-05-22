@@ -1,14 +1,29 @@
 <template>
   <nav class="navigation">
     <div class="nav-content">
-      <router-link to="/" class="home-link">Special Relativity Simulator</router-link>
+      <router-link
+        to="/"
+        class="home-link"
+      >
+        Special Relativity Simulator
+      </router-link>
       <div class="auth-section">
         <template v-if="auth.isAuthenticated">
           <span class="username">Welcome, {{ auth.username }}</span>
-          <button @click="handleLogout" class="logout-button">Logout</button>
+          <button
+            class="logout-button"
+            @click="handleLogout"
+          >
+            Logout
+          </button>
         </template>
         <template v-else>
-          <router-link to="/login" class="login-button">Login</router-link>
+          <router-link
+            to="/login"
+            class="login-button"
+          >
+            Login
+          </router-link>
         </template>
       </div>
     </div>
