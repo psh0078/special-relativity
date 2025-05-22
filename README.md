@@ -1,8 +1,8 @@
 # Special Relativity Simulator
 
-A web-based simulator for visualizing scenarios in special relativity. Built with a Vue 3 frontend and Django REST backend.
+An interactive simulator for visualizing scenarios in special relativity. Built with a Vue 3 frontend and Django REST backend.
 
-![image](https://github.com/user-attachments/assets/2226f101-590b-4eb5-b7e2-a1b624f5ba4d)
+<img src="https://github.com/user-attachments/assets/2226f101-590b-4eb5-b7e2-a1b624f5ba4d" width="400"/>
 
 ## 🛠️ Tech Stack
 
