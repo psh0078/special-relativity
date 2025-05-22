@@ -2,8 +2,6 @@
 
 An interactive simulator for visualizing scenarios in special relativity. Built with a Vue 3 frontend and Django REST backend.
 
-<img src="https://github.com/user-attachments/assets/2226f101-590b-4eb5-b7e2-a1b624f5ba4d" width="400"/>
-
 ## 🛠️ Tech Stack
 
 - **Frontend**: Vue.js 3, TypeScript, Vite, Vuetify, Two.js
