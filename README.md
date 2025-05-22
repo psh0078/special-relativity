@@ -42,7 +42,19 @@ An interactive simulator for visualizing scenarios in special relativity. Built 
     pip install -r requirements.txt
     ```
 
-4. Run the development server:
+4. Set up environment variables:
+
+   Create a `.env` file in the `backend/` directory and add:
+
+   ```env
+   DEBUG=True
+   SECRET_KEY=your-secret-key-here  # generate your own with `python3 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
+   ALLOWED_HOSTS=localhost,127.0.0.1
+   CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+   CORS_ALLOW_CREDENTIALS=True
+   ```
+
+5. Run the Django server:
 
     ```bash
     python manage.py runserver
